@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+<!--  -->
+{% load static %}
+
+<!--  -->
+{% block content %}
+<div class="row justify-content-center h-100">
+    <div class="col-xl-6">
+        <div class="form-input-content" class="parsley-examples" data-parsley-validate novalidate>
+            <div class="card login-form mb-0">
+                <div class="card-body pt-5">
+                    <a class="text-center" href="{% url 'main:Authentication' %}">
+                        <h4> {{mainSchool.denomination|upper}} / ETABLISSEMENT</h4>
+                    </a>
+                    <div class="form-validation">
+                        <form class="mt-5 mb-5 login-input form-valide" id="AuthenticationForm">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <div class="col-lg-12">
+                                    <select class="form-control" id="val-skill" name="val-skill" aria-required="true" aria-describedby="val-skill-error" aria-invalid="true" style="border-bottom: 1px solid #ccc; width: 100%;">
+                                        <option value="">Selectionner</option>
+                                        {% for school in schools %}
+                                        <option value="{{ school.id }}">{{school.sigle|upper}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-12">
+                                    <input type="text" class="form-control" id="val-email" name="val-email" placeholder="Entrez votre email.." style="border-bottom: 1px solid #ccc; width: 100%;">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-lg-12">
+                                    <input type="password" class="form-control" id="val-password" name="val-password" placeholder="Entrez votre mot de passe.." style="border-bottom: 1px solid #ccc;">
+                                </div>
+                            </div>
+                            <button class="btn login-form__btn submit w-100" id="connexionBtn">CONNEXION</button>
+                        </form>
+                    </div>
+                    <a href="{% url 'main:Authentication' %}" class="text-primary">Connexion à l'administration</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Scripts -->
+{% block scripts %}
+<script src="{% static 'school/js/Authentication.js' %}"></script>
+{% endblock scripts %}

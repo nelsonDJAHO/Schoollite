@@ -1,0 +1,35 @@
+.bg-gradient-dark {
+    background-image: linear-gradient(195deg, #01699c, #033f5d);
+}
+
+.color {
+    background-color: #ffffff;
+}
+
+.shadow-dark {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(64, 64, 64, .4) !important;
+}
+
+.bg-gradient-primary {
+    background-image: linear-gradient(195deg, #ec407a, #b01b52);
+}
+
+.shadow-primary {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(233, 30, 99, .4) !important;
+}
+
+.bg-gradient-success {
+    background-image: linear-gradient(195deg, #66bb6a, #256429);
+}
+
+.shadow-success {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(76, 175, 80, .4) !important;
+}
+
+.bg-gradient-info {
+    background-image: linear-gradient(195deg, #e4f431, #7f8818);
+}
+
+.shadow-info {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 188, 212, .4) !important;
+}

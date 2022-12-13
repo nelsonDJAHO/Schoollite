@@ -1,0 +1,407 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include '../partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include '../partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Les messages aux tuteurs {% endblock linkName %}
+<!--  -->
+{% block pageName %} Consulter / Créer {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Les messages aux tuteurs</h4>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-facebook waves-effect waves-light ml-2 mb-4 shadow-success" id="filter-section-btn" data-toggle="modal" data-target="#filterModal"><i class="mdi mdi-filter "></i> Rechercher</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light mb-4 text-right shadow-success ml-2 text-white" data-toggle="modal" data-target="#emailModal"><i class="mdi mdi-plus-outline"></i>Ajouter</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered zero-configuration table-sm" id="tutorsEmailsTable">
+                            <thead>
+                                <tr>
+                                    <th>Référence</th>
+                                    <th>Type</th>
+                                    <th>Fournisseur</th>
+                                    <th>Objet</th>
+                                    <th>Date</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tutorsEmailsDataList">
+                                {% for tutorsMessage in tutorsMessages %}
+                                <tr>
+                                    <td>{{ tutorsMessage.reference }}</td>
+                                    <td>{{ tutorsMessage.messageType }}</td>
+                                    <td>{{ tutorsMessage.messageProvider }}</td>
+                                    <td>{{ tutorsMessage.messageSubject }}</td>
+                                    <td>{{ tutorsMessage.messageDate|date:"d-m-Y" }} / {{ tutorsMessage.messageHour }}</td>
+                                    <td>{{ tutorsMessage.messageStatus }}</td>
+                                    <td>
+                                        <div class="button-list">
+                                            <button class="btn waves-effect waves-light btn-info btn-sm" onclick="getObjectById('{{ tutorsMessage.id }}')" data-toggle="tooltip" title="Informations"> <i class="mdi mdi-information-outline"></i> </button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('{{ tutorsMessage.id }}')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close "></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal content for messages -->
+<div class="modal fade bs-example-modal-lg" id="emailModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Enregistrement d'un message
+                    <small class="text-danger">Les champs avec * sont obligatoires</small></p>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body form">
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#email">Email <span><i class="ti-email"></i></span></a>
+                    </li>
+                    <!-- <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Wathsapp">Wathsapp <span><i class="fa fa-whatsapp"></i></span></a>
+                    </li> -->
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#SMS">SMS <span><i class="ti-mobile"></i></span></a>
+                    </li>
+                </ul>
+
+                <div class="tab-content tabcontent-border">
+                    <!-- Email -->
+                    <div class="tab-pane fade show active" id="email" role="tabpanel">
+                        <form id="tutorEmailForm" class="parsley-examples">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="emailClasses">Classes<span class="text-danger">*</span></label>
+                                    <select id="emailClasses" class="form-control" style="width:100%; height:100%;" required="" data-parsley-required-message="Ce champs est requis.">
+                                        {% if classes %}
+                                            <option value ="All" >Toutes les classes</option>
+                                            <!--  -->
+                                            {% for classe in classes %}
+                                            <!--  -->
+                                            <option value ="{{classe.id}}" >{{classe.wording}}</option>
+                                            <!--  -->
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control bg-transparent" id="emailSubject" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Objet">
+                            </div>
+                            <div class="form-group">
+                                <textarea class="textarea_editor form-control bg-light" id="emailText" data-parsley-minlength="2" parsley-trigger="change" required rows="15" placeholder="Saisissez votre message"></textarea>
+                            </div>
+                            <h5 class="m-b-20"><i class="fa fa-paperclip m-r-5 f-s-18"></i> Fichiers</h5>
+                            <div class="form-group">
+                                <div class="fallback">
+                                    <input class="l-border-1" name="filename" type="file" multiple="multiple" id="emailAttatchment">
+                                </div>
+                            </div>
+
+                            <div class="form-group text-right mb-0">
+                                <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="emailBtn">
+                                    <i class="fa fa-paper-plane"></i>                                           
+                                    Envoyer
+                                    <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Wathsapp -->
+                    <!-- <div class="tab-pane fade" id="Wathsapp" role="tabpanel">
+                        whatsapp
+                    </div> -->
+
+                    <!-- SMS -->
+                    <div class="tab-pane fade" id="SMS" role="tabpanel">
+                        <form id="tutorSmsForm" class="parsley-examples">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="emailClasses1">Classes<span class="text-danger">*</span></label>
+                                    <select id="emailClasses1" class="form-control" style="width:100%; height:100%;" required="" data-parsley-required-message="Ce champs est requis.">
+                                        {% if classes %}
+                                            <option value ="All" >Toutes les classes</option>
+                                            <!--  -->
+                                            {% for classe in classes %}
+                                            <!--  -->
+                                            <option value ="{{classe.id}}" >{{classe.wording}}</option>
+                                            <!--  -->
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control bg-transparent" id="smsSubject" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Objet">
+                            </div>
+                            <div class="form-group">
+                                <textarea class="textarea_editor form-control bg-light" id="smsText" data-parsley-minlength="2" parsley-trigger="change" required rows="4" placeholder="Saisissez votre message"></textarea>
+                            </div>
+
+                            <div class="form-group text-right mb-0">
+                                <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="smsBtn">
+                                    <i class="fa fa-paper-plane"></i>  Envoyer
+                                    <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /End messages modal -->
+
+<!--  Modal content for message informations -->
+<div class="modal fade bs-example-modal-lg" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Rechercher des messages
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body form">
+                <form id="searchForm" class="parsley-examples">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label>Du</label>
+                            <input type="date" class="form-control" placeholder="Votre date de naissance" data-parsley-minlength="2" parsley-trigger="change" required id="searchStartDate">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Au</label>
+                            <input type="date" class="form-control" placeholder="Votre date de naissance" data-parsley-minlength="2" parsley-trigger="change" required id="searchEndDate">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Type</label>
+                            <select id="searchMessageType" class="form-control" data-parsley-required-message="Ce champs est requis.">
+                                <option value ="" >Sélectionner...</option>
+                                <option value="EMAIL">EMAIL</option>
+                                <option value="SMS">SMS</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>status</label>
+                            <select id="searchMessageStatus" class="form-control" data-parsley-required-message="Ce champs est requis.">
+                                <option value ="" >Sélectionner...</option>
+                                <option value="En attente">En attente</option>
+                                <option value="En cours">En cours</option>
+                                <option value="Envoyé">Envoyé</option>
+                                <option value="Annulé">Annulé</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group text-right mb-0">
+                        <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="searchBtn">
+                            <i class="mdi mdi-account-search"></i>  Rechercher
+                            <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                        </button>
+                        <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                            <i class="mdi mdi-reload "></i>
+                            Annuler
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /end search modal -->
+
+
+<!--  Modal content for message informations -->
+<div class="modal fade bs-example-modal-lg" id="messageInformationsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Informations du message
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body form">
+                <form action="" id="messageDetailsform">
+                    <div class="row">
+                        <div class="col-md-12 mb-5">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label class="text-gray">Reference</label>
+                                    <input type="text" class="form-control" value="" readonly="readonly" placeholder="Référence du message" data-parsley-minlength="2" parsley-trigger="change" required id="messageDetailsReference" style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="text-gray">Date</label>
+                                    <input type="text" class="form-control" value="" readonly="readonly" placeholder="" data-parsley-minlength="2" parsley-trigger="change" required id="messageDetailsDate">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="text-gray">Type</label>
+                                    <input type="text" class="form-control" value="{{student.matricule}}" readonly="readonly" placeholder="Nom de l'apprenant" data-parsley-minlength="2" parsley-trigger="change" required id="messageDetailsType" style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label class="text-gray">Fournisseur</label>
+                                    <input type="text" class="form-control" value="" readonly="readonly" placeholder="" data-parsley-minlength="2" parsley-trigger="change" required id="messageDetailsProvider">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="text-gray">Status</label>
+                                    <input type="text" class="form-control" value="" readonly="readonly" placeholder="" data-parsley-minlength="2" parsley-trigger="change" required id="messageDetailsStatus">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="text-gray">Objet</label>
+                                    <input type="text" class="form-control" value="" readonly="readonly" placeholder="" data-parsley-minlength="2" parsley-trigger="change" required id="messageDetailsObject">
+                                </div>
+                            </div>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs mb-3" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#Message">Message <span><i class="ti-book"></i></span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#Files">Fichiers <span><i class="ti-book"></i></span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#Classes">Classes concernées <span><i class="ti-bookmark-alt"></i></span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#ContactedPersons">Tuteurs contactés <span><i class="ti-bookmark-alt"></i></span></a>
+                                </li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content tabcontent-border">
+                                <!-- Message panes -->
+                                <div class="tab-pane fade show active" id="Message" role="tabpanel">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-12">
+                                            <label>Message</label>
+                                            <textarea class="textarea_editor form-control bg-light" readonly="readonly" id="messageDetailsMessage" data-parsley-minlength="2" parsley-trigger="change" required rows="4" placeholder="Saisissez votre message"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Files panes -->
+                                <div class="tab-pane fade" id="Files" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered zero-configuration table-sm" id="messageDetailsFilesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Type</th>
+                                                    <th>Lien</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="messageDetailsFilesDataList">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Classes panes -->
+                                <div class="tab-pane fade" id="Classes" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered zero-configuration table-sm" id="messageDetailsClassesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Classe</th>
+                                                    <th>Degre</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="messageDetailsClassesDataList">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Tutors panes -->
+                                <div class="tab-pane fade" id="ContactedPersons" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered zero-configuration table-sm" id="messageDetailsContactedPersonsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom</th>
+                                                    <th>Sexe</th>
+                                                    <th>Contact</th>
+                                                    <th>Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="messageDetailsContactedPersonsDataList">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+
+{% endblock content %}
+<!-- Scripts -->
+{% block scripts %}
+<script src="{% static 'school/js/tutors/TutorsMessages.js' %}"></script>
+{% endblock scripts %}

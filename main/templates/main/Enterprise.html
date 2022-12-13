@@ -1,0 +1,159 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include './partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include './partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Parametrages {% endblock linkName %}
+<!--  -->
+{% block pageName %} Votre entreprise {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Votre entreprise</h4>
+
+                    <form action="#" class="parsley-examples" data-parsley-validate novalidate enctype="multipart/form-data" id="enterpriseForm">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{MainSchool.id}}" name="" id="mainschoolId">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card-box">
+
+                                    <h4 class="header-title mb-4">Logo</h4>
+                                    {% if MainSchool %}
+                                    <input id="logo" type="file" class="dropify" data-default-file="{{MainSchool.logo.url}}" />
+                                    <!--  -->
+                                    {% else %}
+                                    <!--  -->
+                                    <input id="logo" type="file" class="dropify" data-default-file="/media/yourlogo.png" />
+                                    <!--  -->
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="denomination">Dénomination<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.denomination}}" name="denomination" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Nom de l'entreprise" class="form-control" id="denomination">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="sigle">Sigle<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.sigle}}" name="sigle" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Pays de l'entreprise" class="form-control" id="sigle" style="text-transform:uppercase;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="livingCountry">Pays<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.livingCountry}}" name="livingCountry" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Pays de l'entreprise" class="form-control" id="livingCountry" style="text-transform:uppercase;">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="livingTown">Ville<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.livingTown}}" name="livingTown" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Ville de l'entreprise" class="form-control" id="livingTown" style="text-transform:capitalize;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="address">Adresse<span class="text-danger">*</span></label>
+                                        <input type="address" value="{{MainSchool.address}}" name="address" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Adresse de l'entreprise" class="form-control" id="address" style="text-transform:capitalize;">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="phoneNumber">Téléphone 1<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.phoneNumber}}" name="phoneNumber" data-mask="(999) 99-99-99-99-99" autocomplete="off" required placeholder="(+000)-00-00-00-00-00" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Numéro de téléphone"
+                                            class="form-control" id="phoneNumber">
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label for="phoneNumber1">Téléphone 2<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.phoneNumber1}}" name="phoneNumber1" data-mask="(999) 99-99-99-99-99" autocomplete="off" required placeholder="(+000)-00-00-00-00-00" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Numéro de téléphone 1"
+                                            class="form-control" id="phoneNumber1">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="email">Email<span class="text-danger">*</span></label>
+                                        <input type="email" value="{{MainSchool.email}}" name="email" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Email de l'entreprise" class="form-control" id="email">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="postBox">Boîte postale<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.postBox}}" name="postBox" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Boîte postale de l'entreprise" class="form-control" id="postBox">
+                                    </div>
+                                </div>
+                                <h3>Horaires d'ouvertures</h3>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="monday">Lundi<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.duration1}}" name="monday" data-parsley-minlength="2" parsley-trigger="change" required placeholder="ex:07h-15h ou Fermé" class="form-control" id="monday">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="tuesday">Mardi<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.duration2}}" name="tuesday" data-parsley-minlength="2" parsley-trigger="change" required placeholder="ex:07h-15h ou Fermé" class="form-control" id="tuesday">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="wednesday">Mercredi<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.duration3}}" name="wednesday" data-parsley-minlength="2" parsley-trigger="change" required placeholder="ex:07h-15h ou Fermé" class="form-control" id="wednesday">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="thursday">Jeudi<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.duration4}}" name="thursday" data-parsley-minlength="2" parsley-trigger="change" required placeholder="ex:07h-15h ou Fermé" class="form-control" id="thursday">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="friday">Vendredi<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.duration6}}" name="friday" data-parsley-minlength="2" parsley-trigger="change" required placeholder="ex:07h-15h ou Fermé" class="form-control" id="friday">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="saturday">Samedi<span class="text-danger">*</span></label>
+                                        <input type="text" value="{{MainSchool.duration6}}" name="saturday" data-parsley-minlength="2" parsley-trigger="change" required placeholder="ex:07h-15h ou Fermé" class="form-control" id="saturday">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group text-right mb-0">
+                            <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="postBtn">
+                                <i class="mdi mdi-content-save"></i>                                           
+                                Enregistrer
+                                <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+<!-- Scripts -->
+{% block scripts %}
+<script src="{% static 'main/js/Enterprise.js' %}"></script>
+{% endblock scripts %}

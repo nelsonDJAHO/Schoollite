@@ -1,0 +1,282 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include '../partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include '../partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Etablissements {% endblock linkName %}
+<!--  -->
+{% block pageName %} Niveaux d'enseignement {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Email / Sms configurations</h4>
+
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home8">Email <span><i class="ti-user"></i></span></a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile8">Sms <span><i class="ti-lock"></i></span></a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content tabcontent-border">
+                        <div class="tab-pane fade show active" id="home8" role="tabpanel">
+                            <h4>Les fournisseurs mail</h4>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-success waves-effect waves-light mb-4 text-right shadow-success ml-2 text-white" data-toggle="modal" data-target="#emailModal"><i class="mdi mdi-plus-outline"></i>Ajouter</button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered zero-configuration table-sm" id="emailSettingsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Serveur smTp</th>
+                                            <th>Port</th>
+                                            <th>email</th>
+                                            <th>mot de passe</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="emailSettingDataList">
+                                        {% for emailSetting in emailSettings %}
+                                        <tr>
+                                            <td>{{ emailSetting.smtpServer }}</td>
+                                            <td>{{ emailSetting.smtpServerPort }}</td>
+                                            <td>{{ emailSetting.loginEmail }}</td>
+                                            <td>{{ emailSetting.loginPassword }}</td>
+                                            {% if emailSetting.isActive %}
+                                            <td><span class="badge badge-pill badge-success text-white" style="width:90%">Active</span></td>
+                                            {% else %}
+                                            <td><span class="badge badge-pill badge-danger text-white" style="width:90%">Inactive</span></td>
+                                            {% endif %}
+                                            <td>
+                                                <div class="button-list">
+                                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getEmailSetting('{{ emailSetting.id }}')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteEmailSetting('{{ emailSetting.id }}')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close"></i> </button>
+                                                    <!--  -->
+                                                    {% if emailSetting.isActive %}
+                                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="activateDeactivateEmailSetting('{{emailSetting.id}}', 'Désactiver')" data-toggle="tooltip" title="Désactiver"> <i class="mdi mdi-lock-outline"></i></button>
+                                                    <!--  -->
+                                                    {% else %}
+                                                    <button class="btn waves-effect waves-light btn-success btn-sm text-white" onclick="activateDeactivateEmailSetting('{{ emailSetting.id }}', 'Activer')" data-toggle="tooltip" title="Activer"><i class="mdi mdi-check "></i> </button>
+                                                    <!--  -->
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!--  Modal content for the above example -->
+                            <div class="modal fade bs-example-modal-lg" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myLargeModalLabel">Enregistrement d'un fournisseur email
+                                                <small class="text-danger">Les champs avec * sont obligatoires</small></p>
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body form">
+                                            <ul class="nav nav-tabs mb-3" role="tablist">
+                                                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#gmail">Gmail <span><i class="ti-user"></i></span></a>
+                                                </li>
+                                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile8">Sms <span><i class="ti-lock"></i></span></a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content tabcontent-border">
+                                                <div class="tab-pane fade show active" id="gmail" role="tabpanel">
+
+                                                    <form action="#" class="parsley-examples" data-parsley-validate novalidate id="emailSettingForm">
+                                                        {% csrf_token %}
+                                                        <input type="text" class="d-none" name="" id="emailSettingId">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="smtpServer">Serveur SMTP<span class="text-danger">*</span></label>
+                                                                <input type="url" name="smtpServer" parsley-type="url" parsley-trigger="change" required placeholder="Entrer la dénomination" class="form-control" id="smtpServer">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="smtpServerPort">Port<span class="text-danger">*</span></label>
+                                                                <input type="text" name="smtpServerPort" data-parsley-type="digits" parsley-trigger="change" required placeholder="Entrer la dénomination" class="form-control" id="smtpServerPort">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="loginEmail">Email<span class="text-danger">*</span></label>
+                                                                <input type="email" name="loginEmail" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer la dénomination" class="form-control" id="loginEmail">
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="loginPassword">Mot de passe<span class="text-danger">*</span></label>
+                                                                <input type="text" name="loginPassword" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer la dénomination" class="form-control" id="loginPassword">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group text-right mb-0">
+                                                            <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="emailSettingBtn">
+                                                        <i class="mdi mdi-content-save"></i>                                           
+                                                        Enregistrer
+                                                        <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                                                    </button>
+                                                            <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                                                        <i class="mdi mdi-reload "></i>
+                                                        Annuler
+                                                    </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+                        </div>
+
+                        <div class="tab-pane fade" id="profile8" role="tabpanel">
+                            <h4>Les degrés d'enseigement</h4>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-success waves-effect waves-light mb-4 text-right shadow-success ml-2 text-white" data-toggle="modal" data-target="#susGraduationModal"><i class="mdi mdi-plus-outline"></i>Ajouter</button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered zero-configuration table-sm" id="susGraduationLevelsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Référence</th>
+                                            <th>Sigle</th>
+                                            <th>Dénomination</th>
+                                            <th>Niveau</th>
+                                            <th>Ajout</th>
+                                            <th>Mise à jour</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="susGraduationLevelData">
+                                        {% for suslevel in susGraduationLevel %}
+                                        <tr>
+                                            <td>{{ suslevel.reference }}</td>
+                                            <td>{{ suslevel.sigle }}</td>
+                                            <td>{{ suslevel }}</td>
+                                            <td>{{ suslevel.GraduationLevel }}</td>
+                                            <td>{{ suslevel.createdAt|date:"d-m-Y" }}</td>
+                                            <td>{{ suslevel.updatedAt|date:"d-m-Y" }}</td>
+                                            <td>
+                                                <div class="button-list">
+                                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getSusGraduationLevel('{{ suslevel.id }}')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteSusGraduationLevel('{{ suslevel.id }}')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close"></i> </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!--  Modal content for the above example -->
+                            <div class="modal fade bs-example-modal-lg" id="susGraduationModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myLargeModalLabel">Enregistrement d'un degré d'enseignement
+                                                <small class="text-danger">Les champs avec * sont obligatoires</small></p>
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body form">
+                                            <form action="#" class="parsley-examples" data-parsley-validate novalidate id="susGraduationForm">
+                                                {% csrf_token %}
+                                                <input type="text" class="d-none" name="" id="susGraduationLevelId">
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="susGraduationSigle">fournisseur<span class="text-danger">*</span></label>
+                                                        <select id="susGraduationLevelGraduationId" class="form-control" required="" data-parsley-required-message="Ce champs est requis.">
+                                                            <option value ="">Sélectionner...</option>                                                            
+                                                            <option value="Twilio">Twilio</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="susGraduationWording">Sid<span class="text-danger">*</span></label>
+                                                        <input type="text" name="susGraduationWording" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer la dénomination" class="form-control" id="susGraduationWording">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="susGraduationWording">Token<span class="text-danger">*</span></label>
+                                                        <input type="text" name="susGraduationWording" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer la dénomination" class="form-control" id="susGraduationWording">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group text-right mb-0">
+                                                    <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="susgraduationBtn">
+                                                        <i class="mdi mdi-content-save"></i>                                           
+                                                        Enregistrer
+                                                        <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                                                    </button>
+                                                    <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                                                        <i class="mdi mdi-reload "></i>
+                                                        Annuler
+                                                    </button>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
+                            <!-- /.modal -->
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock content %}
+<!-- Scripts -->
+{% block scripts %}
+<script src="{% static 'main/js/administration/emailsmsConfigurations.js' %}"></script>
+{% endblock scripts %}

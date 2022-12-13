@@ -1,0 +1,329 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include './partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include './partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Tableau de bord {% endblock linkName %}
+<!--  -->
+{% block pageName %} Tableau 1 {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+<div class="container-fluid">
+    <!-- <div class="row">
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-1">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Apprenants(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ studentsCount }}</h2>
+
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-2">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Enseignants(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">0</h2>
+
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-3">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Tuteurs(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ tutorsCount }}</h2>
+
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-4">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Salle(s) de classe(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ classesCount }}</h2>
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-book"></i></span>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="row">
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-widget">
+                <div class="card-body gradient-3">
+                    <div class="media">
+                        <span class="card-widget__icon"><i class="icon-home"></i></span>
+                        <div class="media-body">
+                            <h2 class="card-widget__title">{{ classesCount }}</h2>
+                            <h5 class="card-widget__subtitle">Salle (s)</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-widget">
+                <div class="card-body gradient-4">
+                    <div class="media">
+                        <span class="card-widget__icon"><i class="icon-people"></i></span>
+                        <div class="media-body">
+                            <h2 class="card-widget__title">{{ studentsCount }}</h2>
+                            <h5 class="card-widget__subtitle">Apprennant (s)</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-widget">
+                <div class="card-body gradient-4">
+                    <div class="media">
+                        <span class="card-widget__icon"><i class="icon-people"></i></span>
+                        <div class="media-body">
+                            <h2 class="card-widget__title">{{ tutorsCount }}</h2>
+                            <h5 class="card-widget__subtitle">Tuteur (s)</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="card card-widget">
+                <div class="card-body gradient-9">
+                    <div class="media">
+                        <span class="card-widget__icon"><i class="icon-people"></i></span>
+                        <div class="media-body">
+                            <h2 class="card-widget__title">0</h2>
+                            <h5 class="card-widget__subtitle">Professeur (s)</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Manuel d'utilisation</h4>
+
+                    <!-- Tableau de bord -->
+                    <div class="mt-4">
+                        <h3 class="text-gray text-uppercase text-underline p-2" style="background-color: #F1F1F1;">Tableau de bord</h3>
+                        <p class="text-gray text-justify">
+                            Le tableau de bord permet de visualiser de façon globale, les différentes données de votre école
+                        </p>
+                    </div>
+
+                    <!-- Gestion pédagogique -->
+                    <div class="mt-4">
+                        <h3 class="text-gray text-uppercase text-underline p-2" style="background-color: #F1F1F1;">gestion pedagogique</h3>
+
+                        <!-- Les importations -->
+                        <h4 class="text-gray text-uppercase text-underline mt-5"> I- <span style="text-decoration: underline;">Les importations</span></h4>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Le menu des importations vous permet de renseigner votre base de données à travers des fichiers Excel aux formats précis. Si vous avez des données existantes. Il est important de respecter l'ordre des importations à savoir:
+                            <br> * Importer les niveaux et les degrés d'enseignement<br>
+                            <span>* Importer les salles de classes</span> <br>
+                            <span> * Importer les apprenants</span> <br>
+                        </p>
+                        <p>
+                            Pour éffectuer une importation, accedez au sous-menu de l'importation que vous souhaitez réaliser et suivez les étapes comme suit:
+                            <br> <span style="margin-right: 5px;">1- Téléchargez le fichier témoin à remplir</span> <br>
+                            <span>2- Cliquez sur le boutton ajouter pour éffectuer une nouvelle importation</span> <br>
+                            <span>3- Sélectionnez le fichier rempli à importer</span> <br>
+                            <span>4- Cliquez sur le boutton enregistrer pour éffectuer l'importation</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Importation.png" alt="">
+
+                        <!-- Les salles de classe -->
+                        <h4 class="text-gray text-uppercase text-underline mt-5"> II- <span style="text-decoration: underline;">Les salles de classes</span></h4>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Le sous-menu des salles de classes vous permet d'enregistrer et de consulter les différents niveaux et degrés d'enseignement disponibles dans votre établissement, et ainsi que les différentes salles de classes dont vous disposez.
+                        </p>
+                        <h5 class="text-underline mt-3 bg-success p-1 text-white"> II-1- <span style="text-decoration: underline;">Les niveaux d'enseignement</span></h5>
+                        <p>
+                            Pour éffectuer un enregistrement d'un niveaux d'enseignement, accedez au sous-menu <span class="text-red text-bold">Niveaux et degrés / Niveaux</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer un nouvel enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Niveaux.png" alt="">
+
+                        <h5 class="text-underline mt-3 bg-success p-1 text-white"> II-2- <span style="text-decoration: underline;">Les degrés d'enseignement</span></h5>
+                        <p>
+                            Pour éffectuer un enregistrement d'une classe, accedez au sous-menu <span class="text-red text-bold">Niveaux et degrés / Degrés</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer un nouvelle enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Degrés.png" alt="">
+
+                        <h5 class="text-underline mt-3 bg-success p-1 text-white"> II-3- <span style="text-decoration: underline;">Les salles de classes</span></h5>
+                        <p>
+                            Pour éffectuer un enregistrement d'une classe, accedez au sous-menu <span class="text-red text-bold">Consulter / Créer</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer un nouvel enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Classes.png" alt="">
+
+                        <!-- Les apprenants -->
+                        <h4 class="text-gray text-uppercase text-underline mt-5"> III- <span style="text-decoration: underline;">Les apprenants</span></h4>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Le menu des apprenants vous permet de consulter et d'enregistrer les informations des différents apprennants de votre etablissement.
+                        </p>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Pour éffectuer un enregistrement d'un apprenant, accedez au menu <span class="text-red text-bold">Consulter / Créer</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer un nouvel enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Students.png" alt="">
+
+                        <!-- Les tueurs -->
+                        <h4 class="text-gray text-uppercase text-underline mt-5"> IV- <span style="text-decoration: underline;">Les tuteurs</span></h4>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Le menu des tuteurs vous permet de consulter et d'enregistrer les informations des différents tuteurs de votre etablissement et aussi de leur envoyer des messages.
+                        </p>
+                        <h5 class="text-underline mt-3 bg-success p-1 text-white"> IV-1- <span style="text-decoration: underline;">Les Tuteurs</span></h5>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Pour éffectuer un enregistrement d'un tuteur, accedez au menu <span class="text-red text-bold">Consulter / Créer</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer un nouvel enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Tuteurs.png" alt="">
+
+                        <h5 class="text-underline mt-3 bg-success p-1 text-white"> IV-2- <span style="text-decoration: underline;">Les messages aux tuteurs</span></h5>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Avant de pouvoir envoyer des messages aux tuteurs, vous devez tout d'abord configurer les paramètres des comptes Email et Sms par lesquels vous passerez. Accedez au menu <span class="text-red text-bold">EMAIL / SMS</span> du
+                            module Administration->Etablissement
+                        </p>
+                        <h5 class="text-green mt-1"> IV-2-A- <span style="text-decoration: underline;">Email</span></h5>
+                        <p>
+                            <br> Pour éffectuer l'enregistrement de la configuration Email , accedez au menu <span class="text-red text-bold">EMAIL / SMS</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton modifier pour éffectuer l'enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/EmailSettings.png" alt="">
+
+                        <h5 class="text-green mt-3"> IV-2-B- <span style="text-decoration: underline;">SMS</span></h5>
+                        <p>
+                            <br> Pour éffectuer l'enregistrement de la configuration SMS , accedez au menu <span class="text-red text-bold">EMAIL / SMS</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton modifier pour éffectuer l'enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/SMSSettings.png" alt="">
+
+                        <h5 class="text-green mt-3"> IV-2-C- <span style="text-decoration: underline;">Envoyer un message</span></h5>
+                        <p>
+                            <br> Pour envoyer un message aux tuteurs, accedez au menu <span class="text-red text-bold">Les messages</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer l'envoi</span> <br>
+                            <span>3- Remplissez les informations obligatoires</span> <br>
+                            <span>4- Cliquer sur le boutton enregistrer pour éffectuer l'envoi</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/TutorMessage.png" alt="">
+
+
+                        <!-- Les inscriptions -->
+                        <h4 class="text-gray text-uppercase text-underline mt-5"> V- <span style="text-decoration: underline;">Les inscriptions</span></h4>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Le sous-menu des inscriptions vous permet d'enregistrer et de consulter les insriptions des apprenants dans votre établissement.
+                        </p>
+                        <p>
+                            Pour éffectuer un enregistrement d'une inscription, accedez au sous-menu <span class="text-red text-bold">Consulter / Créer</span> et suivez les étapes comme suit:
+                            <br><span>1- Cliquer sur le boutton ajouter pour éffectuer un nouvel enregistrement</span> <br>
+                            <span>2- Remplissez les informations obligatoires</span> <br>
+                            <span>3- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/Inscription.png" alt="">
+
+                    </div>
+
+                    <!-- Amdinistration -->
+                    <div class="mt-4">
+                        <h3 class="text-gray text-uppercase text-underline p-2" style="background-color: #F1F1F1;">Administration</h3>
+                        <p class="text-gray text-justify">
+                            Le module <span class="text-info">ADMINISTRATION</span> vous permet de parametrer un certain nombres de choses utiles au bon fonctionnement de votre application
+                        </p>
+
+                        <!-- Mon etablissement -->
+                        <h4 class="text-gray text-uppercase text-underline mt-5"> I- <span style="text-decoration: underline;">Etablissement</span></h4>
+                        <p class="text-gray text-justify mt-3 mb-4">
+                            Le menu ETABLISSEMENT vous permet de renseigner les informations de votre etablissement et de parametrer les configurations d'envois de messages.
+                        </p>
+                        <h5 class="text-underline mt-3 bg-success p-1 text-white"> I-1- <span style="text-decoration: underline;">Mon etablissement</span></h5>
+                        <p>
+                            Pour éffectuer l'enregistrement des informations de votre etablissement , accedez au menu <span class="text-red text-bold">Mon etablissement</span> et suivez les étapes comme suit:
+                            <br> <span>1- Remplissez les informations obligatoires</span> <br>
+                            <span>2- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/School.png" alt="">
+
+                        <!-- <h5 class="text-underline mt-3 bg-success p-1 text-white"> I-2- <span style="text-decoration: underline;">EMAIL / SMS</span></h5>
+                        <p>
+                            Pour éffectuer l'enregistrement des informations de votre etablissement , accedez au menu <span class="text-red text-bold">Mon etablissement</span> et suivez les étapes comme suit:
+                            <br> <span>1- Remplissez les informations obligatoires</span> <br>
+                            <span>2- Cliquer sur le boutton enregistrer pour éffectuer l'enregistrement</span> <br>
+                        </p>
+                        <img style="width: 100%; " src="/media/Manual/School.png" alt=""> -->
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+<!--**********************************
+    Footer start
+***********************************-->

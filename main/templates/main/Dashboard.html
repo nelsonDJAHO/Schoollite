@@ -1,0 +1,117 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include './partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include './partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Tableau de bord {% endblock linkName %}
+<!--  -->
+{% block pageName %} Tableau 1 {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-1">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Etablissement(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ schoolsCount }}</h2>
+                        <!-- <p class="text-white mb-0">Jan - March 2019</p> -->
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-building"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-2">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Apprenants(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ studentsCount }}</h2>
+                        <!-- <p class="text-white mb-0">Jan - March 2019</p> -->
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-3">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Personnel</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ administrationMembersCount }}</h2>
+                        <!-- <p class="text-white mb-0">Jan - March 2019</p> -->
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+            <div class="card gradient-4">
+                <div class="card-body">
+                    <h3 class="card-title text-white">Salle(s) de classe(s)</h3>
+                    <div class="d-inline-block">
+                        <h2 class="text-white">{{ classesCount }}</h2>
+                        <!-- <p class="text-white mb-0">Jan - March 2019</p> -->
+                    </div>
+                    <span class="float-right display-5 opacity-5"><i class="fa fa-book"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Manuel d'utilisation</h4>
+
+                    <!-- Tableau de bord -->
+                    <div class="mt-4">
+                        <h3 class="text-gray text-uppercase text-underline p-2" style="background-color: #F1F1F1;">Tableau de bord</h3>
+                        <p class="text-gray text-justify">
+                            Le tableau de bord permet de visualiser de façon globale, les différentes données de votre école
+                        </p>
+                    </div>
+
+                    <!-- Gestion pédagogique -->
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+<!--**********************************
+    Footer start
+***********************************-->

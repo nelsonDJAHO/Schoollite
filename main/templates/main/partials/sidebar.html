@@ -1,0 +1,62 @@
+<div class="nk-sidebar">
+    <div class="nk-nav-scroll">
+        <ul class="metismenu" id="menu">
+            <li class="nav-label" style="background-color: #68b97f; color:white;">Tableau de bord</li>
+            <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="icon-speedometer menu-icon"></i><span class="nav-text">Tableau de bord</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'main:Dashboard' %}">Tableau 1</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-label" style="background-color: #68b97f; color:white;">Gestion du personnel</li>
+            <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="icon-user menu-icon"></i><span class="nav-text">Le personnel scolaire</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'main:UserGroups' %}">Fonctions</a></li>
+                    <li><a href="{% url 'main:SchoolWorkers' %}">Consulter / Créer</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="icon-user menu-icon"></i><span class="nav-text">Les administrateurs</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'main:Administrators' %}">Consulter / Créer</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-label" style="background-color: #68b97f; color:white;">Administration</li>
+            <!-- <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="icon-notebook menu-icon"></i><span class="nav-text">Administrateurs</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'main:Administrators' %}">Consulter / Créer</a></li>
+                </ul>
+            </li> -->
+            <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="icon-home menu-icon"></i><span class="nav-text">Etablissements</span>
+                </a>
+                <ul aria-expanded="false">
+                    <!-- <li><a href="{% url 'main:GraduationLevels' %}">Niveaux d'enseignements</a></li> -->
+                    <li><a href="{% url 'main:Schools' %}">Consulter / Créer</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="icon-settings menu-icon"></i><span class="nav-text">Paramétrages</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{% url 'main:AcademicYears' %}">Années scolaires</a></li>
+                    <li><a href="{% url 'main:Enterprise' %}">Votre établissement</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

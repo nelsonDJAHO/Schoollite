@@ -1,0 +1,270 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include '../partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include '../partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Les apprenants {% endblock linkName %}
+<!--  -->
+{% block pageName %} Consulter / Créer {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Les apprenants</h4>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-facebook waves-effect waves-light ml-2 mb-4 shadow-success" id="filter-section-btn" data-toggle="modal" data-target="#filterModal"><i class="mdi mdi-filter "></i> Rechercher</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light mb-4 text-right shadow-success ml-2 text-white" data-toggle="modal" data-target="#studentModal" onclick="resetForm('studentForm')"><i class="mdi mdi-plus-outline"></i>Ajouter</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered zero-configuration table-sm" id="studentsTable">
+                            <thead>
+                                <tr>
+                                    <th>Avatar</th>
+                                    <th>Matricule</th>
+                                    <th>Nom</th>
+                                    <th>Sexe</th>
+                                    <th>Adresse</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentDataList">
+                                {% for student in students %}
+                                <tr>
+                                    <td><img src="{{ student.User.avatar.url }}" alt="" class="rounded-circle" style="width:30px; height:30px;"></td>
+                                    <td>{{ student.User.matricule }}</td>
+                                    <td>{{ student.User }}</td>
+                                    <td>{{ student.User.gender }}</td>
+                                    <td>{{ student.User.address }}</td>
+                                    <td>{{ student.User.phoneNumber }}</td>
+                                    <td>
+                                        <div class="button-list">
+                                            <a href="{% url 'school:StudentDetails' student.User.id %}" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="icon-eye"></i></a>
+                                            <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('{{ student.User.id }}')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('{{ student.User.id }}')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal content for the above example -->
+<div class="modal fade bs-example-modal-lg" id="studentModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Enregistrement d'un apprenant
+                    <small class="text-danger">Les champs avec * sont obligatoires</small></p>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body form">
+                <form id="studentForm" class="parsley-examples">
+                    {% csrf_token %}
+                    <input type="text" class="d-none" name="" id="studentId">
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-6">
+                            <div class="media align-items-center mb-4 mt-4">
+                                <input id="avatar" type="file" class="dropify" data-default-file="/media/avatar.png" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <hr>
+                            <h4 class="mb-4">Identification</h4>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label>Matricule <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Entrez le matricule" data-parsley-minlength="2" parsley-trigger="change" required id="matricule">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label>Nom <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Nom de l'apprenant" data-parsley-minlength="2" parsley-trigger="change" required id="lastName" style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Prénoms <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Prénoms de l'apprenant" data-parsley-minlength="2" parsley-trigger="change" required id="firstName" style="text-transform: capitalize;">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Sexe <span class="text-danger">*</span></label>
+                                    <select id="gender" class="form-control" required="" data-parsley-required-message="Ce champs est requis.">
+                                        <option value ="" >Sélectionner...</option>
+                                        <option value="Femme">Femme</option>
+                                        <option value="Homme">Homme</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <h4 class="mb-4">Naissance</h4>
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label>Date de naissance <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" placeholder="Votre date de naissance" data-parsley-minlength="2" parsley-trigger="change" required id="birthDate">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Pays de naissance <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Pays de naissance" data-parsley-minlength="3" parsley-trigger="change" required id="birthCountry" style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Ville de naissance <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Ville de naissance" data-parsley-minlength="1" parsley-trigger="change" required id="birthTown" style="text-transform: capitalize;">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>Nationalité <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Nationalité" data-parsley-minlength="1" parsley-trigger="change" required id="nationality" style="text-transform: uppercase;">
+                                </div>
+                            </div>
+
+                            <hr>
+                            <h4 class="mb-4">Adresse géographique / électronique</h4>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="livingCountry">Pays de résidence <span class="text-danger">*</span></label>
+                                    <input type="text" name="livingCountry" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrez le pays" class="form-control" id="livingCountry" style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="livingTown">Ville de résidence <span class="text-danger">*</span></label>
+                                    <input type="text" name="livingTown" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrez la ville" class="form-control" id="livingTown" style="text-transform: capitalize;">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="livingAddress">Adresse <span class="text-danger">*</span></label>
+                                    <input type="text" name="livingAddress" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrez le quartier" class="form-control" id="livingAddress" style="text-transform: capitalize;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" data-parsley-minlength="2" parsley-trigger="change" placeholder="Entrez l'adresse email" class="form-control" id="email">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="phoneNumber">Télépone (avec l'indicatif et sans +)</label>
+                                    <input type="tel" name="phoneNumber" placeholder="Ex: 22800000000" class="form-control" id="phoneNumber">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group text-right mb-0">
+                        <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="studentBtn">
+                            <i class="mdi mdi-content-save"></i>                                           
+                            Enregistrer
+                            <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                        </button>
+                        <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                            <i class="mdi mdi-reload "></i>
+                            Réinitialiser
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!--  Modal content for filter studens -->
+<div class="modal fade bs-example-modal-lg" id="filterModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Rechercher un apprenant
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body form">
+                <form id="searchStudentForm" class="parsley-examples">
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label>Rechercher</label>
+                                    <input type="text" class="form-control" placeholder="matricule  nom  prenoms  date de naissance  email  telephone" data-parsley-minlength="2" parsley-trigger="change" required id="searchTerm">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group text-right mb-0">
+                        <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="searchStudentBtn">
+                            <i class="mdi mdi-account-search"></i>                                           
+                            Rechercher
+                            <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                        </button>
+                        <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                            <i class="mdi mdi-reload "></i>
+                            Réinitialiser
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+{% endblock content %}
+<!-- Scripts -->
+{% block scripts %}
+<script src="{% static 'school/js/students/Students.js' %}"></script>
+{% endblock scripts %}

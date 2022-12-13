@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SCHOOLLITE</title>
+    <!-- Favicon icon -->
+    <!-- <link rel="icon" type="image/png" sizes="16x16" href="{% static 'dist/images/favicon.png' %}"> -->
+    <!-- <link rel="icon" type="image/png" sizes="16x16" href="{{ SchoolMain.logo.url }}"> -->
+    <link rel="shortcut icon" href="{{MainSchool.logo.url}}">
+    <!-- Dropify -->
+    <link href="{% static 'dist/plugins/dropify/dist/css/dropify.min.css' %}" rel="stylesheet">
+    <!-- Custom toastar -->
+    <link href="{% static 'dist/plugins/toastr/css/toastr.min.css' %}" rel="stylesheet">
+    <!-- parsley -->
+    <link href="{% static 'dist/plugins/parsleyjs/parsley.css' %}" rel="stylesheet">
+    <!-- Custom datatable -->
+    <link href="{% static 'dist/plugins/tables/css/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+    <!-- Sweet alert -->
+    <link href="{% static 'dist/plugins/sweetalert/css/sweetalert.css' %}" rel="stylesheet">
+    <!-- Select 2 -->
+    <link href="{% static 'dist/plugins/select2/select2.min.css' %}" rel="stylesheet">
+    <!-- Summernote -->
+    <link href="{% static 'dist/plugins/summernote/dist/summernote.css' %}" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link href="{% static 'dist/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'main/css/main.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!--*******************
+        Preloader start
+    ********************-->
+    <div id="preloader">
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+    <!--*******************
+        Preloader end
+    ********************-->
+
+
+    <!--**********************************
+        Main wrapper start
+    ***********************************-->
+    <div id="main-wrapper">
+
+        <!--**********************************
+            Nav header start
+        ***********************************-->
+        <div class="nav-header" style="background-color: #fff;">
+            <div class="brand-logo">
+                {% if Admin %}
+                <a href="{% url 'main:Dashboard' %}">
+                    <b class="logo-abbr"><img src="{{ MainSchool.logo.url }}" alt=""> </b>
+                    <span class="logo-compact"><img src="{{ MainSchool.logo.url }}" alt=""></span>
+                    <span class="brand-title">
+                        <img src="{{ MainSchool.logo.url }}" alt="" height="28" style="width:100%; height:100%">
+                    </span>
+                </a>
+                {% elif Worker %}
+                <a href="{% url 'school:Dashboard' %}">
+                    <b class="logo-abbr"><img src="{{ MainSchool.logo.url }}" alt=""> </b>
+                    <span class="logo-compact"><img src="{{ MainSchool.logo.url }}" alt=""></span>
+                    <span class="brand-title">
+                        <img src="{{ MainSchool.logo.url }}" alt="" height="28" style="width:100%; height:100%">
+                    </span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <!--**********************************
+            Nav header end
+        ***********************************-->
+
+        <!--**********************************
+            Header start
+        ***********************************-->
+        {% block header %} {% endblock header %}
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
+
+        <!--**********************************
+            Sidebar start
+        ***********************************-->
+        {% block sidebar %} {% endblock sidebar %}
+        <!--**********************************
+            Sidebar end
+        ***********************************-->
+
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <div class="row page-titles mx-0">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">{% block linkName %}{% endblock linkName %}</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">{% block pageName %}{% endblock pageName %}</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <!--  -->
+            {% if Admin.UserGroup.reference == 'ADMIN' %} {% if not AcademicYear %}
+            <!--  -->
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Alerte</h4>
+                        <div class="card-content">
+                            <div class="alert alert-warning">Aucune année scolaire active <a href="{% url 'main:AcademicYears' %}" class="alert-link">Activez en une ici</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+            {% endif %} {% endif %}
+            <!--  -->
+
+            {% block content %}{% endblock content %}
+
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+
+        <!--**********************************
+            Footer start
+        ***********************************-->
+        <div class="footer">
+            <div class="copyright">
+                <p>Copyright &copy;
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    {{MainSchool.denomination}}
+                </p>
+            </div>
+        </div>
+        <!--**********************************
+            Footer end
+        ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Jquery -->
+    <!-- <script src="{% static 'dist/plugins/jquery/jquery.min.js' %}"></script> -->
+
+    <script src="{% static 'dist/plugins/common/common.min.js' %}"></script>
+    <script src="{% static 'dist/js/custom.min.js' %}"></script>
+    <script src="{% static 'dist/js/settings.js' %}"></script>
+    <script src="{% static 'dist/js/gleek.js' %}"></script>
+    <script src="{% static 'dist/js/styleSwitcher.js' %}"></script>
+    <!-- Toastr -->
+    <script src="{% static 'dist/plugins/toastr/js/toastr.min.js' %}"></script>
+    <script src="{% static 'dist/plugins/toastr/js/toastr.init.js' %}"></script>
+    <!-- Form validation -->
+    <script src="{% static 'dist/plugins/validation/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dist/plugins/validation/jquery.validate-init.js' %}"></script>
+    <!-- Dropify -->
+    <script src="{% static 'dist/plugins/dropify/dist/js/dropify.min.js' %}"></script>
+    <!-- Parsley -->
+    <script src="{% static 'dist/plugins/parsleyjs/parsley.min.js' %}"></script>
+    <script src="{% static 'dist/plugins/parsleyjs/parsley.init.js' %}"></script>
+    <!-- Data table -->
+    <script src="{% static 'dist/plugins/tables/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'dist/plugins/tables/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'dist/plugins/tables/js/datatable-init/datatable-basic.min.js' %}"></script>
+    <!-- Sweet alert -->
+    <script src="{% static 'dist/plugins/sweetalert/js/sweetalert.min.js' %}"></script>
+    <!-- Select 2 -->
+    <script src="{% static 'dist/plugins/select2/select2.full.js' %}"></script>
+    <script src="{% static 'dist/js/plugins-init/select2-init.js' %}"></script>
+    <!-- Summernote -->
+    <script src="{% static 'dist/plugins/summernote/dist/summernote.min.js' %}"></script>
+
+    <script src="{% static 'main/js/main.js' %}"></script>
+
+    {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>

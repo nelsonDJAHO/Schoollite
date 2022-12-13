@@ -1,0 +1,222 @@
+{% extends 'main.html' %}
+<!--  -->
+{% load static %}
+
+<!--**********************************
+    Header start
+***********************************-->
+{% block header %} {% include './partials/header.html' %} {% endblock header %}
+<!--**********************************
+    Header end ti-comment-alt
+***********************************-->
+
+<!--**********************************
+    Sidebar start
+***********************************-->
+{% block sidebar %} {% include './partials/sidebar.html' %} {% endblock sidebar %}
+<!--**********************************
+    Sidebar end
+***********************************-->
+
+<!--**********************************
+    page Title
+***********************************-->
+{% block linkName %} Profil {% endblock linkName %}
+<!--  -->
+{% block pageName %} Mon profil {% endblock pageName %}
+<!--**********************************
+    page Title
+**********************************-->
+
+<!--**********************************
+    Content body end
+***********************************-->
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Mon profile</h4>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#home8">Informations <span><i class="ti-user"></i></span></a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#profile8">Authentification <span><i class="ti-lock"></i></span></a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content tabcontent-border">
+                        <div class="tab-pane fade show active" id="home8" role="tabpanel">
+                            <div class="p-t-15">
+                                <h4>Informations personnelles</h4>
+                                <input type="text" name="" id="userId" class="d-none" value="{{Worker.id}}">
+                                <div class="basic-form">
+                                    <form id="profileForm" class="parsley-examples">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="media align-items-center mb-4 mt-4">
+                                                    <input id="avatar" type="file" class="dropify" data-default-file="{{ Worker.avatar.url }}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-9">
+
+                                                <hr>
+                                                <h4 class="mb-4">Identification</h4>
+
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Nom</label>
+                                                        <input type="text" class="form-control" placeholder="Votre nom" data-parsley-minlength="2" parsley-trigger="change" required value="{{ Worker.lastName }}" id="lastName" style="text-transform: uppercase;">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Prénoms</label>
+                                                        <input type="text" class="form-control" placeholder="Prénoms" data-parsley-minlength="2" parsley-trigger="change" required value="{{ Worker.firstName}}" id="firstName" style="text-transform: capitalize;">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Sexe</label>
+                                                        <select id="gender" class="form-control" required="" data-parsley-required-message="Ce champs est requis.">
+                                                            {% if Worker.gender == "Femme" %}
+                                                                <option value ="">Sélectionner...</option>
+                                                                <option value="Femme" selected>Femme</option>
+                                                                <option value="Homme">Homme</option>
+                                                            {% elif Worker.gender == "Homme" %}
+                                                                <option value ="" >Sélectionner...</option>
+                                                                <option value="Femme">Femme</option>
+                                                                <option value="Homme" selected>Homme</option>
+                                                            {% else %}
+                                                                <option value ="" >Sélectionner...</option>
+                                                                <option value="Femme">Femme</option>
+                                                                <option value="Homme">Homme</option>
+                                                            {% endif %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <hr>
+                                                <h4 class="mb-4">Naissance</h4>
+
+
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Date de naissance</label>
+                                                        <input type="date" class="form-control" placeholder="Votre date de naissance" data-parsley-minlength="2" parsley-trigger="change" required value="{{ Worker.birthDate }}" id="birthDate">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Pays de naissance</label>
+                                                        <input type="text" class="form-control" placeholder="Pays de naissance" data-parsley-minlength="3" parsley-trigger="change" required value="{{ Worker.birthCountry }}" id="birthCountry" style="text-transform: uppercase;">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Ville de naissance</label>
+                                                        <input type="text" class="form-control" placeholder="Ville de naissance" data-parsley-minlength="1" parsley-trigger="change" required value="{{ Worker.birthTown }}" id="birthTown" style="text-transform: capitalize;">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Nationalité</label>
+                                                        <input type="text" class="form-control" placeholder="Votre nationalité" data-parsley-minlength="1" parsley-trigger="change" required value="{{ Worker.nationality }}" id="nationality" style="text-transform: uppercase;">
+                                                    </div>
+                                                </div>
+
+                                                <hr>
+                                                <h4 class="mb-4">Adresse géographique / électronique</h4>
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="livingCountry">Pays de résidence</label>
+                                                        <input type="text" name="livingCountry" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer le pays" class="form-control" value="{{ Worker.livingCountry }}" id="livingCountry" style="text-transform: uppercase;">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="livingTown">Ville de résidence</label>
+                                                        <input type="text" name="livingTown" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer la ville" class="form-control" value="{{ Worker.livingTown }}" id="livingTown" style="text-transform: capitalize;">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="livingAddress">Adresse</label>
+                                                        <input type="text" name="livingAddress" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer le quartier" class="form-control" value="{{ Worker.address }}" id="livingAddress" style="text-transform: capitalize;">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="email">Email</label>
+                                                        <input type="email" name="email" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer l'adresse email" class="form-control" value="{{ Worker.email }}" id="email">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="phoneNumber">Télépone</label>
+                                                        <input type="tel" name="phoneNumber" data-parsley-minlength="1" parsley-trigger="change" required placeholder="(+000)-00-00-00-00-00" class="form-control" value="{{Worker.phoneNumber}}" id="phoneNumber">
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group text-right mb-0">
+                                            <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="informationBtn">
+                                                <i class="mdi mdi-content-save"></i>                                           
+                                                Enregistrer
+                                                <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                                            </button>
+                                            <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                                                <i class="mdi mdi-reload "></i>
+                                                Annuler
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile8" role="tabpanel">
+                            <div class="p-t-15">
+                                <h4>Informations d'authentification</h4>
+                                <form action="#" class="parsley-examples" data-parsley-validate novalidate id="passwordForm">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="oldPassword">Ancien mot de passe<span class="text-danger">*</span></label>
+                                                    <input type="password" name="oldPassword" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Entrer l'ancien mot de passe" class="form-control" id="oldPassword">
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="newPassword">Nouveau mot de passe<span class="text-danger">*</span></label>
+                                                    <input type="password" name="newPassword" data-parsley-minlength="5" parsley-trigger="change" required placeholder="Entrer le nouveau mot de passe" class="form-control" id="newPassword">
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="confirmPassword">Confirmer<span class="text-danger">*</span></label>
+                                                    <input type="password" name="confirmPassword" data-parsley-minlength="5" data-parsley-equalto="#newPassword" parsley-trigger="change" required placeholder="Confirmer" class="form-control" id="confirmPassword">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-right mb-0">
+                                        <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="passwordBtn">
+                                                <i class="mdi mdi-content-save"></i>                                           
+                                                Enregistrer
+                                                <span class="spinner-border spinner-border-sm d-none" id="spinner1" role="status" aria-hidden="true"></span>    
+                                            </button>
+                                        <button type="reset" class="btn btn-danger shadow-primary waves-effect">
+                                                <i class="mdi mdi-reload "></i>
+                                                Annuler
+                                            </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+<!-- Scripts -->
+{% block scripts %}
+<script src="{% static 'school/js/profile.js' %}"></script>
+
+<script>
+    document.getElementById('birthDate').value = '{{Worker.birthDate|date:"Y-m-d"}}'
+</script>
+{% endblock scripts %}
