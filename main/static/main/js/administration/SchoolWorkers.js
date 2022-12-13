@@ -227,8 +227,9 @@ schoolWorkerForm.addEventListener('submit', (e) => {
                             <td>${element.startDate}</td>
                             <td>
                                 <div class="button-list">
+                                    <a href="/SchoolWorkerDetails/${element.id}/" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="mdi mdi-information-outline"></i></a>
                                     <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
-                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi icon-trash"></i> </button>
+                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeObject('${ element.id }')" data-toggle="tooltip" title="Retirer du personnel administratif"><i class="icon-trash"></i> </button>
                                 </div>
                             </td>
                         </tr>
@@ -395,8 +396,9 @@ function removeObject(id) {
                                     <td>${element.startDate}</td>
                                     <td>
                                         <div class="button-list">
+                                            <a href="/SchoolWorkerDetails/${element.id}/" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="mdi mdi-information-outline"></i></a>
                                             <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
-                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi icon-trash"></i> </button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeObject('${ element.id }')" data-toggle="tooltip" title="Retirer du personnel administratif"><i class="icon-trash"></i> </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -514,8 +516,9 @@ schoolAddWorkerForm.addEventListener('submit', (e) => {
                             <td>${element.startDate}</td>
                             <td>
                                 <div class="button-list">
-                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
-                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi icon-trash"></i> </button>
+                                    <a href="/SchoolWorkerDetails/${element.id}/" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="mdi mdi-information-outline"></i></a>
+                                            <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeObject('${ element.id }')" data-toggle="tooltip" title="Retirer du personnel administratif"><i class="icon-trash"></i> </button>
                                 </div>
                             </td>
                         </tr>
