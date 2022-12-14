@@ -5,7 +5,6 @@ import urllib
 from datetime import datetime, date
 import smtplib
 
-import pywhatkit
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q, Subquery
 from django.http import JsonResponse
@@ -1402,9 +1401,10 @@ def SendWhatsappMessageToSomebody(request):
             status = False
             message = "Des champs importants sont vides"
         else:
+            import pywhatkit
             pywhatkit.sendwhatmsg_instantly(
                 phone_no="+" + str(phoneNumber),
-                message="Howdy! This message will be sent instantly!",
+                message=message,
             )
             message = "Message envoyé"
         return JsonResponse({'status': status, 'message': message})
