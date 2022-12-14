@@ -4,6 +4,8 @@ import threading
 import urllib
 from datetime import datetime, date
 import smtplib
+
+import pywhatkit
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q, Subquery
 from django.http import JsonResponse
@@ -1381,7 +1383,33 @@ def SendSmsToPeople(request):
 
         return JsonResponse({'status': status, 'message': message})
 
-    
+
+# Send whatsapp message to somebody
+def SendWhatsappMessageToSomebody(request):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        status = True
+        message = ""
+
+        message = request.POST.get('whatsappMessage')
+        phoneNumber = request.POST.get('phoneNumber')
+
+        if not message or not phoneNumber:
+            status = False
+            message = "Des champs importants sont vides"
+        else:
+            pywhatkit.sendwhatmsg_instantly(
+                phone_no="+" + str(phoneNumber),
+                message="Howdy! This message will be sent instantly!",
+            )
+            message = "Message envoyé"
+        return JsonResponse({'status': status, 'message': message})
+
+
 # Get message details
 def getMessageDetailsById(request, id):
     status = True
@@ -1571,7 +1599,8 @@ def Tutors(request):
                                                       searchField=searchField, companyName=companyName,
                                                       profession=profession)
                         # Lien tutor
-                        TutorAffiliationFeaturing.objects.create(Tutor_id=newUser.id, School_id=request.session['School'])
+                        TutorAffiliationFeaturing.objects.create(Tutor_id=newUser.id,
+                                                                 School_id=request.session['School'])
 
                         if gender == "Homme":
                             message = "Le tuteur " + str(newUser) + " a été enregistré"
@@ -1611,7 +1640,8 @@ def Tutors(request):
                             message = "La tutrice " + str(user) + " a été enregistrée"
                         if not TutorAffiliationFeaturing.objects.filter(Tutor_id=user.id, isActive=True).exists():
                             # Lien tutor
-                            TutorAffiliationFeaturing.objects.create(Tutor_id=user.id, School_id=request.session['School'])
+                            TutorAffiliationFeaturing.objects.create(Tutor_id=user.id,
+                                                                     School_id=request.session['School'])
 
             if status:
                 tutorsId = []
@@ -1725,7 +1755,7 @@ def DeleteTutor(request, id):
                 }
                 tutorsList.append(item)
         return JsonResponse({'status': status, 'message': message, 'tutors': tutorsList})
-    
+
 
 # Student filter withe safe
 def TutorFilterWithSafe(request):
@@ -1737,11 +1767,13 @@ def TutorFilterWithSafe(request):
         tutorsId = []
 
         if term:
-            for item in TutorAffiliationFeaturing.objects.filter(School_id=request.session['School'], isActive=True).distinct():
+            for item in TutorAffiliationFeaturing.objects.filter(School_id=request.session['School'],
+                                                                 isActive=True).distinct():
                 tutorsId.append(item.Tutor_id)
             tutors = User.objects.filter(Q(searchField__startswith=term) |
                                          Q(searchField__contains=term) |
-                                         Q(searchField__endswith=term), id__in=tutorsId).exclude(id__in=Learner.objects.filter(School_id=request.session['School']).values('User_id'))[:100]
+                                         Q(searchField__endswith=term), id__in=tutorsId).exclude(
+                id__in=Learner.objects.filter(School_id=request.session['School']).values('User_id'))[:100]
             for tutor in tutors:
                 item = {
                     'id': tutor.id,
@@ -1757,7 +1789,8 @@ def TutorFilterWithSafe(request):
                 }
                 tutorsList.append(item)
         else:
-            for item in TutorAffiliationFeaturing.objects.filter(School_id=request.session['School'], isActive=True).distinct()[:100]:
+            for item in TutorAffiliationFeaturing.objects.filter(School_id=request.session['School'],
+                                                                 isActive=True).distinct()[:100]:
                 tutorsId.append(item.Tutor_id)
             print(tutorsId)
             tutors = User.objects.filter(id__in=tutorsId)[:100]

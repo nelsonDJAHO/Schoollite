@@ -89,6 +89,8 @@ urlpatterns = [
     path('SendEmailToPeople/', views.SendEmailToPeople, name='SendEmailToPeople'),
     # Send sms to people
     path('SendSmsToPeople/', views.SendSmsToPeople, name='SendSmsToPeople'),
+    # Send whatsapp message to somebody
+    path('SendWhatsappMessageToSomebody/', views.SendWhatsappMessageToSomebody, name='SendWhatsappMessageToSomebody'),
     # Get message details
     path('getMessageDetailsById/<str:id>/', views.getMessageDetailsById, name='getMessageDetailsById'),
     # Get message information

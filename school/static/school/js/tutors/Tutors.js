@@ -7,6 +7,76 @@ $(document).ready(function() {
     $('#emailText').summernote({ height: 250, minHeight: null, maxHeight: null, focus: !1 })
 });
 
+//search a tutor
+var $select = $('#searchTutor')
+$select.on("change", function(e) {
+    id = document.getElementById('searchTutor').value
+    $.ajax({
+        method: 'GET',
+        url: `/getUserById/${id}/`,
+        success: function(data) {
+            if (data.status == true) {
+                tutorForm.reset();
+                document.getElementById('tutorId').value = data.user.id
+                document.getElementById('lastName').value = data.user.lastName
+                document.getElementById('firstName').value = data.user.firstName
+                document.getElementById('gender').value = data.user.gender
+                document.getElementById('birthDate').value = data.user.birthDate
+                document.getElementById('birthCountry').value = data.user.birthCountry
+                document.getElementById('birthTown').value = data.user.birthTown
+                document.getElementById('nationality').value = data.user.nationality
+                document.getElementById('livingCountry').value = data.user.livingCountry
+                document.getElementById('livingTown').value = data.user.livingTown
+                document.getElementById('livingAddress').value = data.user.address
+                document.getElementById('email').value = data.user.email
+                document.getElementById('phoneNumber').value = data.user.phoneNumber
+                document.getElementById('profession').value = data.user.profession
+                document.getElementById('companyName', companyName).value = data.user.companyName
+                reloadDropify(data.user.avatar)
+                $('#tutorModal').modal('show')
+            } else {
+                toastr.error(data.message, "Erreur", {
+                    timeOut: 5e3,
+                    closeButton: !0,
+                    debug: !1,
+                    newestOnTop: !0,
+                    progressBar: !0,
+                    positionClass: "toast-top-right",
+                    preventDuplicates: !0,
+                    onclick: null,
+                    showDuration: "300",
+                    hideDuration: "1000",
+                    extendedTimeOut: "1000",
+                    showEasing: "swing",
+                    hideEasing: "linear",
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut",
+                    tapToDismiss: !1
+                })
+            }
+        },
+        error: function(error) {
+            toastr.error("Une erreur est survenue", "Erreur", {
+                timeOut: 5e3,
+                closeButton: !0,
+                debug: !1,
+                newestOnTop: !0,
+                progressBar: !0,
+                positionClass: "toast-top-right",
+                preventDuplicates: !0,
+                onclick: null,
+                showDuration: "300",
+                hideDuration: "1000",
+                extendedTimeOut: "1000",
+                showEasing: "swing",
+                hideEasing: "linear",
+                showMethod: "fadeIn",
+                hideMethod: "fadeOut",
+                tapToDismiss: !1
+            })
+        }
+    })
+});
 
 // Tutor Form session ************* Tutor Form session
 // Tutor Form session ************* Tutor Form session
@@ -344,6 +414,7 @@ function openMessageModal(tutorId) {
                 document.getElementById('tutorMessageId').value = data.user.id
                 document.getElementById('tutorEmail').value = data.user.email
                 document.getElementById('tutorPhonenumber').value = data.user.phoneNumber
+                document.getElementById('tutorWathsappPhonenumber').value = data.user.phoneNumber
             }
         }
     })
@@ -465,24 +536,124 @@ tutorEmailForm.addEventListener('submit', (e) => {
 const tutorSmsForm = document.getElementById('tutorSmsForm')
 
 tutorSmsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        //Validation du formulaire
+        if ($('#tutorSmsForm').parsley().isValid()) {
+
+            document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Enregistrement..."
+            document.getElementById('smsBtn').disabled = true
+
+            mydata = new FormData()
+            mydata.append("recievers", $('#tutorMessageId').val())
+            mydata.append("smsSubject", $('#smsSubject').val())
+            mydata.append("smsText", $('#smsText').val())
+            mydata.append("recieverGroup", 'Tuteurs')
+            mydata.append('csrfmiddlewaretoken', csrftoken)
+
+            $.ajax({
+                method: 'POST',
+                url: '/school/SendSmsToPeople/',
+                processData: false,
+                contentType: false,
+                data: mydata,
+                success: function(data) {
+                    console.log(data)
+                    if (data.status == true) {
+
+                        document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
+                        document.getElementById('smsBtn').disabled = false
+                        toastr.success(data.message, "Succès", {
+                            timeOut: 5e3,
+                            closeButton: !0,
+                            debug: !1,
+                            newestOnTop: !0,
+                            progressBar: !0,
+                            positionClass: "toast-top-right",
+                            preventDuplicates: !0,
+                            onclick: null,
+                            showDuration: "300",
+                            hideDuration: "1000",
+                            extendedTimeOut: "1000",
+                            showEasing: "swing",
+                            hideEasing: "linear",
+                            showMethod: "fadeIn",
+                            hideMethod: "fadeOut",
+                            tapToDismiss: !1
+                        })
+                        document.getElementById('smsSubject').value = ""
+                        document.getElementById('smsText').value = ""
+
+                    } else {
+                        document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
+                        document.getElementById('smsBtn').disabled = false
+                        toastr.error(data.message, "erreur", {
+                            timeOut: 5e3,
+                            closeButton: !0,
+                            debug: !1,
+                            newestOnTop: !0,
+                            progressBar: !0,
+                            positionClass: "toast-top-right",
+                            preventDuplicates: !0,
+                            onclick: null,
+                            showDuration: "300",
+                            hideDuration: "1000",
+                            extendedTimeOut: "1000",
+                            showEasing: "swing",
+                            hideEasing: "linear",
+                            showMethod: "fadeIn",
+                            hideMethod: "fadeOut",
+                            tapToDismiss: !1
+                        })
+                    }
+                },
+                error: function(error) {
+                    document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
+                    document.getElementById('smsBtn').disabled = false
+                    toastr.error("Une erreur es survenue", "erreur", {
+                        timeOut: 5e3,
+                        closeButton: !0,
+                        debug: !1,
+                        newestOnTop: !0,
+                        progressBar: !0,
+                        positionClass: "toast-top-right",
+                        preventDuplicates: !0,
+                        onclick: null,
+                        showDuration: "300",
+                        hideDuration: "1000",
+                        extendedTimeOut: "1000",
+                        showEasing: "swing",
+                        hideEasing: "linear",
+                        showMethod: "fadeIn",
+                        hideMethod: "fadeOut",
+                        tapToDismiss: !1
+                    })
+                }
+            })
+
+        }
+
+    })
+    //Send whatsapp message
+const tutorWathsappForm = document.getElementById('tutorWathsappForm')
+
+tutorWathsappForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     //Validation du formulaire
-    if ($('#tutorSmsForm').parsley().isValid()) {
+    if ($('#tutorWathsappForm').parsley().isValid()) {
 
-        document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Enregistrement..."
-        document.getElementById('smsBtn').disabled = true
+        document.getElementById('WathsappBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Enregistrement..."
+        document.getElementById('WathsappBtn').disabled = true
 
         mydata = new FormData()
-        mydata.append("recievers", $('#tutorMessageId').val())
-        mydata.append("smsSubject", $('#smsSubject').val())
-        mydata.append("smsText", $('#smsText').val())
-        mydata.append("recieverGroup", 'Tuteurs')
+        mydata.append("whatsappMessage", $('#WathsappText').val())
+        mydata.append("phoneNumber", $('#tutorWathsappPhonenumber').val())
         mydata.append('csrfmiddlewaretoken', csrftoken)
 
         $.ajax({
             method: 'POST',
-            url: '/school/SendSmsToPeople/',
+            url: '/school/SendWhatsappMessageToSomebody/',
             processData: false,
             contentType: false,
             data: mydata,
@@ -490,8 +661,8 @@ tutorSmsForm.addEventListener('submit', (e) => {
                 console.log(data)
                 if (data.status == true) {
 
-                    document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
-                    document.getElementById('smsBtn').disabled = false
+                    document.getElementById('WathsappBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
+                    document.getElementById('WathsappBtn').disabled = false
                     toastr.success(data.message, "Succès", {
                         timeOut: 5e3,
                         closeButton: !0,
@@ -510,12 +681,11 @@ tutorSmsForm.addEventListener('submit', (e) => {
                         hideMethod: "fadeOut",
                         tapToDismiss: !1
                     })
-                    document.getElementById('smsSubject').value = ""
-                    document.getElementById('smsText').value = ""
+                    document.getElementById('WathsappText').value = ""
 
                 } else {
-                    document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
-                    document.getElementById('smsBtn').disabled = false
+                    document.getElementById('WathsappBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
+                    document.getElementById('WathsappBtn').disabled = false
                     toastr.error(data.message, "erreur", {
                         timeOut: 5e3,
                         closeButton: !0,
@@ -537,8 +707,8 @@ tutorSmsForm.addEventListener('submit', (e) => {
                 }
             },
             error: function(error) {
-                document.getElementById('smsBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
-                document.getElementById('smsBtn').disabled = false
+                document.getElementById('WathsappBtn').innerHTML = "<i class='fa fa-paper-plane'></i>  Envoyer"
+                document.getElementById('WathsappBtn').disabled = false
                 toastr.error("Une erreur es survenue", "erreur", {
                     timeOut: 5e3,
                     closeButton: !0,

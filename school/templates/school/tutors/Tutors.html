@@ -255,7 +255,7 @@
                     </li>
                     <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#SMSPanel">SMS <span><i class="ti-mobile"></i></span></a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#Wathsapp">Wathsapp <span><i class="fa fa-whatsapp"></i></span></a>
+                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#WathsappPanel">Wathsapp <span><i class="fa fa-whatsapp"></i></span></a>
                     </li>
                 </ul>
 
@@ -295,11 +295,6 @@
                         </form>
                     </div>
 
-                    <!-- Wathsapp -->
-                    <!-- <div class="tab-pane fade" id="Wathsapp" role="tabpanel">
-                        whatsapp
-                    </div> -->
-
                     <!-- SMS -->
                     <div class="tab-pane fade" id="SMSPanel" role="tabpanel">
                         <form id="tutorSmsForm" class="parsley-examples">
@@ -319,6 +314,30 @@
 
                             <div class="form-group text-right mb-0">
                                 <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="smsBtn">
+                                    <i class="fa fa-paper-plane"></i>  Envoyer
+                                    <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Wathsapp -->
+                    <div class="tab-pane fade" id="WathsappPanel" role="tabpanel">
+                        <form id="tutorWathsappForm" class="parsley-examples">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="tutorPhonenumber">Destinataire<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control bg-transparent" id="tutorWathsappPhonenumber" readonly="readonly" data-parsley-minlength="2" parsley-trigger="change" required placeholder="Contact du destinataire">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="textarea_editor form-control bg-light" id="WathsappText" data-parsley-minlength="2" parsley-trigger="change" required rows="4" placeholder="Saisissez votre message"></textarea>
+                            </div>
+
+                            <div class="form-group text-right mb-0">
+                                <button class="btn btn-success shadow-success waves-effect waves-light mr-1 text-white" type="submit" id="WathsappBtn">
                                     <i class="fa fa-paper-plane"></i>  Envoyer
                                     <span class="spinner-border spinner-border-sm d-none" id="spinner" role="status" aria-hidden="true"></span>    
                                 </button>
