@@ -64,12 +64,36 @@ urlpatterns = [
     # Inscriptions session **************
     # Inscriptions session **************
 
-    # View, create and update inscriptions
+    # View, create and update school fees
+    path('SchoolFees/', views.SchoolFees, name='SchoolFees'),
+    # School fees profiles
+    path('SchoolFeesProfiles/', views.SchoolFeesProfiles, name='SchoolFeesProfiles'),
+    # Get school fee by id
+    path('GetSchoolFeeProfileById/<str:id>/', views.GetSchoolFeeProfileById, name='GetSchoolFeeProfileById'),
+    # Detele school fee profile by id
+    path('DeleteSchoolFeeProfileById/<str:id>/', views.DeleteSchoolFeeProfileById, name='DeleteSchoolFeeProfileById'),
+    # School fees saving
+    path('SchoolFeeSaving/', views.SchoolFeeSaving, name='SchoolFeeSaving'),
+    # Get school fee by id
+    path('GetSchoolFeeById/<str:id>/', views.GetSchoolFeeById, name='GetSchoolFeeById'),
+    # Delete shoolfee by id
+    path('DeleteSchoolFeeById/<str:id>/', views.DeleteSchoolFeeById, name='DeleteSchoolFeeById'),
+    # get school fee details by susgraduationlevelid
+    path('GetSchoolFeeDetailsBySusgraduationId/', views.GetSchoolFeeDetailsBySusgraduationId, name='GetSchoolFeeDetailsBySusgraduationId'),    # View, create and update inscriptions
+    # SchoolFeeDetails
+    path('SchoolFeeDetails/', views.SchoolFeeDetails, name='SchoolFeeDetails'),
+    # Get schoollfeedetailsById
+    path('GetSchoolFeeDetailsById/<str:id>/', views.GetSchoolFeeDetailsById, name='GetSchoolFeeDetailsById'),
+    # Delete schoolfees by id
+    path('DeleteSchoolFeeDetailsById/<str:id>/', views.DeleteSchoolFeeDetailsById, name='DeleteSchoolFeeDetailsById'),
+    # Inscriptions
     path('Inscriptions/', views.Inscriptions, name='Inscriptions'),
     # Filter student who has not inscription
     path('InscriptionStudentsFilter/', views.InscriptionStudentsFilter, name='StudentsFilter'),
     # Get inscription's primary information
     path('GetInscriptionById/<str:id>/', views.GetInscriptionById, name='GetInscriptionById'),
+    # Get inscription details by id
+    path('GetInscriptionDetailsById/<str:id>/', views.GetInscriptionDetailsById, name='GetInscriptionDetailsById'),
     # Delete insriptions's information
     path('DeleteInscription/<str:id>/', views.DeleteInscription, name='DeleteInscription'),
     # Filter inscriptions

@@ -233,21 +233,21 @@ function deleteObject(id) {
                                 data.students.forEach(element => {
                                     studentDataList.innerHTML += `
                                         <tr>
-                                    <td><img src="${element.avatar}" alt="" class="rounded-circle" style="width:30px; height:30px;"></td>
-                                    <td>${element.matricule}</td>
-                                    <td>${element.fullName}</td>
-                                    <td>${element.gender}</td>
-                                    <td>${element.address}</td>
-                                    <td>${element.phoneNumber}</td>
-                                    <td>
-                                        <div class="button-list">
-                                            <a href="/school/StudentDetails/${element.id}/" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="icon-eye"></i></a>
-                                <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
-                                <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                        `
+                                            <td><img src="${element.avatar}" alt="" class="rounded-circle" style="width:30px; height:30px;"></td>
+                                            <td>${element.matricule}</td>
+                                            <td>${element.fullName}</td>
+                                            <td>${element.gender}</td>
+                                            <td>${element.address}</td>
+                                            <td>${element.phoneNumber}</td>
+                                            <td>
+                                                <div class="button-list">
+                                                    <a href="/school/StudentDetails/${element.id}/" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="icon-eye"></i></a>
+                                        <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                        <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `
                                 });
                                 $('#studentsTable').DataTable()
                                 swal("Succès !!", data.message, "success")

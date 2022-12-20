@@ -997,6 +997,495 @@ def StudentDetails(request, id):
 
 
 # Inscriptions
+
+# School Fees
+def SchoolFees(request):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        academicYear = ''
+        schoolFeeDetails = ''
+        if request.session['AcademicYear']:
+            academicYear = AcademicYear.objects.get(id=request.session['AcademicYear'])
+            schoolFeeDetails = SchoolFeeBySchool.objects.filter(School_id=request.session['School'],
+                                                                AcademicYear_id=request.session['AcademicYear'])
+
+        context = {
+            'Worker': User.objects.get(id=request.session['Worker']),
+            'UserGroup': UserGroup.objects.get(reference=request.session['WorkerGroup']),
+            'MainSchool': MainSchool.objects.get(id=1),
+            'AcademicYear': academicYear,
+            'academicYears': AcademicYear.objects.all()[:10],
+            'school': School.objects.get(id=request.session['School']),
+            'SchoolFeesProfiles': SchoolFeeProfile.objects.all(),
+            'SchoolFees': SchoolFee.objects.all(),
+            'SusGraduationLevels': SusGraduationLevel.objects.all()[:100],
+            'schoolFeeDetails': schoolFeeDetails,
+            'classes': Classe.objects.filter(School_id=request.session['School'])
+        }
+        return render(request, 'school/inscriptions/SchoolFees.html', context)
+
+
+# Schoolfees profiles
+def SchoolFeesProfiles(request):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        if is_ajax(request) and request.method == "POST":
+            status = True
+            message = ""
+            schoolFeesProfiles = []
+
+            # Posted Datas
+            SchoolFeeProfileId = request.POST.get('SchoolFeeProfileId')
+            SchoolFeeProfileWording = request.POST.get('SchoolFeeProfileWording').title()
+
+            # Treatment
+            if not SchoolFeeProfileWording:
+                status = False
+                message = "Des champs importants sont vides"
+            else:
+                # New saving
+                if not SchoolFeeProfileId:
+                    if SchoolFeeProfile.objects.filter(wording__exact=SchoolFeeProfileWording).exists():
+                        status = False
+                        message = "La dénomination " + SchoolFeeProfileWording + ' existe déjà'
+                    else:
+                        SchoolFeeProfile.objects.create(reference=ReferenceMaker('SFP-'),
+                                                        wording=SchoolFeeProfileWording.title())
+                        message = "Le profile " + SchoolFeeProfileWording + ' a été enregistré'
+                else:
+                    if SchoolFeeProfile.objects.filter(wording__exact=SchoolFeeProfileWording).exclude(
+                            id=SchoolFeeProfileId).exists():
+                        status = False
+                        message = "La dénomination " + SchoolFeeProfileWording + ' existe déjà'
+                    else:
+                        profile = SchoolFeeProfile.objects.get(id=SchoolFeeProfileId)
+                        profile.wording = SchoolFeeProfileWording.title()
+                        profile.save()
+                        message = "Le profile " + SchoolFeeProfileWording + ' a été enregistré'
+
+        if status:
+            for data in SchoolFeeProfile.objects.all():
+                item = {
+                    'id': data.id,
+                    'reference': data.reference,
+                    'wording': data.wording,
+                    'createdAt': data.createdAt.strftime('%d-%m-%Y'),
+                    'updatedAt': data.updatedAt.strftime('%d-%m-%Y')
+                }
+                schoolFeesProfiles.append(item)
+        return JsonResponse({'status': status, 'message': message, 'schoolFeesProfiles': schoolFeesProfiles})
+
+
+# Get school fee profile by id
+def GetSchoolFeeProfileById(request, id):
+    status = True
+    message = ""
+    item = None
+
+    if not id:
+        status = False
+        message = "Aucun profile sélectionné"
+    elif not SchoolFeeProfile.objects.filter(id=id).exists():
+        status = False
+        message = "Ce profile n'existe plus"
+    else:
+        profile = SchoolFeeProfile.objects.get(id=id)
+        item = {
+            'id': profile.id,
+            'wording': profile.wording
+        }
+    return JsonResponse({'status': status, 'message': message, 'profile': item})
+
+
+# Delete school fee profile
+def DeleteSchoolFeeProfileById(request, id):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        status = True
+        message = ""
+        schoolFeesProfiles = []
+        if not id:
+            status = False
+            message = "Aucun profile sélectionné"
+        elif not SchoolFeeProfile.objects.filter(id=id).exists():
+            status = False
+            message = "Ce profile n'existe plus"
+        elif SchoolFeeBySchool.objects.filter(SchoolFeeProfile_id=id).exists():
+            status = False
+            message = "Vous ne pouvez pas supprimer ce profil car lié à au moins un frais de scolarité"
+        else:
+            profile = SchoolFeeProfile.objects.get(id=id)
+            profile.delete()
+            message = "Suppression faite"
+        if status:
+            for data in SchoolFeeProfile.objects.all():
+                item = {
+                    'id': data.id,
+                    'reference': data.reference,
+                    'wording': data.wording,
+                    'createdAt': data.createdAt.strftime('%d-%m-%Y'),
+                    'updatedAt': data.updatedAt.strftime('%d-%m-%Y')
+                }
+                schoolFeesProfiles.append(item)
+        return JsonResponse({'status': status, 'message': message, 'schoolFeesProfiles': schoolFeesProfiles})
+
+
+# School fee
+def SchoolFeeSaving(request):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        if is_ajax(request) and request.method == "POST":
+            status = True
+            message = ""
+            schoolFeesList = []
+
+            SchoolFeeId = request.POST.get('SchoolFeeId')
+            SchoolFeeWording = request.POST.get('SchoolFeeWording').title()
+            if not SchoolFeeWording:
+                status = False
+                message = "Des champs importants sont vides"
+            else:
+                # new savind
+                if not SchoolFeeId:
+                    if SchoolFee.objects.filter(wording__exact=SchoolFeeWording).exists():
+                        status = False
+                        message = "Le frais " + SchoolFeeWording + " existe déjà"
+                    else:
+                        SchoolFee.objects.create(reference=ReferenceMaker('SCF-'),
+                                                 wording=SchoolFeeWording)
+                        message = "Le frais " + SchoolFeeWording + " a été enregistré"
+                else:
+                    if SchoolFee.objects.filter(wording__exact=SchoolFeeWording).exclude(id=SchoolFeeId).exists():
+                        status = False
+                        message = "Le frais " + SchoolFeeWording + " existe déjà"
+                    else:
+                        schoolfee = SchoolFee.objects.get(id=SchoolFeeId)
+                        schoolfee.wording = SchoolFeeWording
+                        schoolfee.save()
+                        message = "Le frais " + SchoolFeeWording + " a été enregistré"
+
+            if status:
+                for data in SchoolFee.objects.all():
+                    item = {
+                        'id': data.id,
+                        'reference': data.reference,
+                        'wording': data.wording,
+                        'createdAt': data.createdAt.strftime('%d-%m-%Y'),
+                        'updatedAt': data.updatedAt.strftime('%d-%m-%Y')
+                    }
+                    schoolFeesList.append(item)
+            return JsonResponse({'status': status, 'message': message, 'schoolFees': schoolFeesList})
+
+
+# Get School Fee by id
+def GetSchoolFeeById(request, id):
+    status = True
+    message = ""
+    item = None
+
+    if not id:
+        status = False
+        message = "Aucun fraus sélectionné"
+    elif not SchoolFee.objects.filter(id=id).exists():
+        status = False
+        message = "Ce frais n'existe plus"
+    else:
+        schoolfee = SchoolFee.objects.get(id=id)
+        item = {
+            'id': schoolfee.id,
+            'reference': schoolfee.reference,
+            'wording': schoolfee.wording
+        }
+    return JsonResponse({'status': status, 'message': message, 'schoolFee': item})
+
+
+# Delete schoolfee
+def DeleteSchoolFeeById(request, id):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        status = True
+        message = ""
+        schoolFeesList = []
+
+        if not id:
+            status = False
+            message = "Aucun fraus sélectionné"
+        elif not SchoolFee.objects.filter(id=id).exists():
+            status = False
+            message = "Ce frais n'existe plus"
+        elif SchoolFeeBySchool.objects.filter(SchoolFee_id=id).exists():
+            status = False
+            message = "Vous ne pouvez pas supprimer ce profil car lié à au moins un niveau d'étude"
+        else:
+            schoollfee = SchoolFee.objects.get(id=id)
+            schoollfee.delete()
+            message = "Suppression faite"
+
+    if status:
+        for data in SchoolFee.objects.all():
+            item = {
+                'id': data.id,
+                'reference': data.reference,
+                'wording': data.wording,
+                'createdAt': data.createdAt.strftime('%d-%m-%Y'),
+                'updatedAt': data.updatedAt.strftime('%d-%m-%Y')
+            }
+            schoolFeesList.append(item)
+    return JsonResponse({'status': status, 'message': message, 'schoolFees': schoolFeesList})
+
+
+# Get schooll fee details by susgraduationid
+def GetSchoolFeeDetailsBySusgraduationId(request):
+    status = True
+    message = ""
+    schoolfeedetails = []
+
+    # Posted data
+    susgraduationlevelid = request.POST.get('susgraduationlevelid')
+    SchoolFeeDetailsProfileId = request.POST.get('SchoolFeeDetailsProfileId')
+
+    if not susgraduationlevelid:
+        status = False
+        message = "Aucun niveau sélectionné"
+    elif not request.session['AcademicYear']:
+        status = False
+        message = "Aucune année scolaire active"
+    elif not SusGraduationLevel.objects.filter(id=susgraduationlevelid).exists():
+        status = False
+        message = "Ce niveau n'existe plus"
+    elif not SchoolFeeBySchool.objects.filter(SusGraduationLevel_id=susgraduationlevelid,
+                                              AcademicYear_id=request.session['AcademicYear']).exists():
+        status = False
+        message = "Aucun details trouvé pour " + str(SusGraduationLevel.objects.get(id=susgraduationlevelid).sigle)
+    else:
+        if not SchoolFeeDetailsProfileId:
+            for data in SchoolFeeBySchool.objects.filter(SusGraduationLevel_id=susgraduationlevelid, School_id=request.session['School'],
+                                                         AcademicYear_id=request.session['AcademicYear']):
+                item = {
+                    'id': data.id,
+                    'AcademicYear': data.AcademicYear.wording,
+                    'SusGraduationLevel': data.SusGraduationLevel.sigle,
+                    'SchoolFeeProfile': data.SchoolFeeProfile.wording,
+                    'SchoolFee': data.SchoolFee.wording,
+                    'important': data.important,
+                    'amount': data.amount
+                }
+                schoolfeedetails.append(item)
+        else:
+            for data in SchoolFeeBySchool.objects.filter(SusGraduationLevel_id=susgraduationlevelid, SchoolFeeProfile_id=SchoolFeeDetailsProfileId, School_id=request.session['School'],
+                                                         AcademicYear_id=request.session['AcademicYear']):
+                item = {
+                    'id': data.id,
+                    'AcademicYear': data.AcademicYear.wording,
+                    'SusGraduationLevel': data.SusGraduationLevel.sigle,
+                    'SchoolFeeProfile': data.SchoolFeeProfile.wording,
+                    'SchoolFee': data.SchoolFee.wording,
+                    'important': data.important,
+                    'amount': data.amount
+                }
+                schoolfeedetails.append(item)
+        message ="Message trouvés"
+
+    return JsonResponse({'status': status, 'message': message, 'schoolFeeDetails': schoolfeedetails})
+
+
+# New school fee details
+def SchoolFeeDetails(request):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        if is_ajax(request) and request.method == 'POST':
+            status = True
+            message = ""
+            schoolFeeDetailsList = []
+            SusGraduationSchoolFeeDetails = []
+
+            # Posted data
+            SchoolFeeDetailsId = request.POST.get('SchoolFeeDetailsId')
+            SusGraduationLevelId = request.POST.get('SusGraduationLevelId')
+            ProfileId = request.POST.get('ProfileId')
+            FeeId = request.POST.get('FeeId')
+            Amount = request.POST.get('Amount')
+            Important = request.POST.get('Important')
+
+            # TrAITEMENT
+            if not ProfileId or not SusGraduationLevelId or not FeeId or not Amount or not Important:
+                status = False
+                message = "Des champs importants sont vides"
+            elif not request.session['School']:
+                status = False
+                message = "Aucune année scolaire active"
+            else:
+                # Nouvel enregistrement
+                if not SchoolFeeDetailsId:
+                    if SchoolFeeBySchool.objects.filter(SusGraduationLevel_id=SusGraduationLevelId,
+                                                        SchoolFeeProfile_id=ProfileId,
+                                                        SchoolFee_id=FeeId,
+                                                        School_id=request.session['School'],
+                                                        AcademicYear_id=request.session['AcademicYear']).exists():
+                        status = False
+                        message = "Vous avez déjà défini les details des frais pour ce niveau, ce profil et ce frais"
+                    else:
+                        important = True
+                        if Important == '0':
+                            important = False
+                        SchoolFeeBySchool.objects.create(SusGraduationLevel_id=SusGraduationLevelId,
+                                                         SchoolFeeProfile_id=ProfileId,
+                                                         SchoolFee_id=FeeId,
+                                                         School_id=request.session['School'],
+                                                         AcademicYear_id=request.session['AcademicYear'],
+                                                         important=important,
+                                                         amount=Amount,
+                                                         reference=ReferenceMaker('SFD-'))
+                        message = "Les details du frais ont été enregistrés"
+                else:
+                    if SchoolFeeBySchool.objects.filter(SusGraduationLevel_id=SusGraduationLevelId,
+                                                        SchoolFeeProfile_id=ProfileId,
+                                                        SchoolFee_id=FeeId,
+                                                        School_id=request.session['School'],
+                                                        AcademicYear_id=request.session['AcademicYear']).exclude(
+                        id=SchoolFeeDetailsId).exists():
+                        status = False
+                        message = "Vous avez déjà défini des detais des frais pour ce niveau, ce profil et ce frais"
+                    else:
+                        schoolfeedetailsbyschool = SchoolFeeBySchool.objects.get(id=SchoolFeeDetailsId)
+                        schoolfeedetailsbyschool.SusGraduationLevel_id = SusGraduationLevelId
+
+                        schoolfeedetailsbyschool.SchoolFeeProfile_id = ProfileId
+                        schoolfeedetailsbyschool.SchoolFee_id = FeeId
+                        schoolfeedetailsbyschool.important = Important
+                        schoolfeedetailsbyschool.amount = Amount
+                        schoolfeedetailsbyschool.save()
+                        message = "Les details du frais ont été enregistrés"
+                if status:
+                    # Les details des frais par niveau
+                    for data in SchoolFeeBySchool.objects.filter(SusGraduationLevel_id=SusGraduationLevelId,
+                                                                 School_id=request.session['School'],
+                                                                 AcademicYear_id=request.session['AcademicYear']):
+                        item = {
+                            'id': data.id,
+                            'AcademicYear': data.AcademicYear.wording,
+                            'SusGraduationLevel': data.SusGraduationLevel.sigle,
+                            'SchoolFeeProfile': data.SchoolFeeProfile.wording,
+                            'SchoolFee': data.SchoolFee.wording,
+                            'important': data.important,
+                            'amount': data.amount
+                        }
+                        SusGraduationSchoolFeeDetails.append(item)
+                    # Tous les details des frais
+                    for data in SchoolFeeBySchool.objects.filter(School_id=request.session['School'],
+                                                                 AcademicYear_id=request.session['AcademicYear']):
+                        item = {
+                            'id': data.id,
+                            'AcademicYear': data.AcademicYear.wording,
+                            'SusGraduationLevel': data.SusGraduationLevel.sigle,
+                            'SchoolFeeProfile': data.SchoolFeeProfile.wording,
+                            'SchoolFee': data.SchoolFee.wording,
+                            'important': data.important,
+                            'amount': data.amount
+                        }
+                        schoolFeeDetailsList.append(item)
+            return JsonResponse({'status': status, 'message': message, 'SusGraduationSchoolFeeDetails': SusGraduationSchoolFeeDetails,
+                 'schoolFeeDetailsList': schoolFeeDetailsList})
+
+
+# getg school fee details by id
+def GetSchoolFeeDetailsById(request, id):
+    status = True
+    message = "Details trouve"
+    item = None
+
+    if not id:
+        status = False
+        message = "Aucun details de frais sélectionné"
+    elif not SchoolFeeBySchool.objects.filter(id=id).exists():
+        status = False
+        message = "Cet details de frais n'existe plus"
+    else:
+        schoolfeedetails = SchoolFeeBySchool.objects.get(id=id)
+        important = None
+        if schoolfeedetails.important:
+            important = '1'
+        else:
+            important = '0'
+        item = {
+            'id': schoolfeedetails.id,
+            'AcademicYear': schoolfeedetails.AcademicYear_id,
+            'SusGraduationLevel': schoolfeedetails.SusGraduationLevel_id,
+            'SchoolFeeProfile': schoolfeedetails.SchoolFeeProfile_id,
+            'SchoolFee': schoolfeedetails.SchoolFee_id,
+            'important': important,
+            'amount': schoolfeedetails.amount
+        }
+    return JsonResponse({'status': status, 'message': message, 'schoolFeeDetails': item})
+
+
+# Delete schoollfeedetails by id
+def DeleteSchoolFeeDetailsById(request, id):
+    if 'Worker' not in request.session:
+        if is_ajax(request):
+            return JsonResponse({'status': False, 'message': "Vous n'êtes pas connecté(e)"})
+        else:
+            return redirect('school:Authentication')
+    else:
+        status = True
+        message = "Suppression faite"
+        schoolFeeDetailsList = []
+
+        if not id:
+            status = False
+            message = "Aucun details de frais sélectionné"
+        elif not SchoolFeeBySchool.objects.filter(id=id).exists():
+            status = False
+            message = "Cet details de frais n'existe plus"
+        elif InscriptionSchoolFee.objects.filter(SchoolFeeBySchool_id=id).exists():
+            status = False
+            message = "Impossible de supprimer ce details car lié à au moins une inscription"
+        else:
+            schoolfeedetails = SchoolFeeBySchool.objects.get(id=id)
+            schoolfeedetails.delete()
+
+        if status:
+            # Tous les details des frais
+            for data in SchoolFeeBySchool.objects.filter(School_id=request.session['School'],
+                                                         AcademicYear_id=request.session['AcademicYear']):
+                item = {
+                    'id': data.id,
+                    'AcademicYear': data.AcademicYear.wording,
+                    'SusGraduationLevel': data.SusGraduationLevel.sigle,
+                    'SchoolFeeProfile': data.SchoolFeeProfile.wording,
+                    'SchoolFee': data.SchoolFee.wording,
+                    'important': data.important,
+                    'amount': data.amount
+                }
+                schoolFeeDetailsList.append(item)
+        return JsonResponse({'status': status, 'message': message, 'schoolFeeDetailsList': schoolFeeDetailsList})
+
+
+# New inscription
 def Inscriptions(request):
     if 'Worker' not in request.session:
         if is_ajax(request):
@@ -1013,11 +1502,13 @@ def Inscriptions(request):
             inscriptionId = request.POST.get('inscriptionId')
             studentId = request.POST.get('studentId')
             susGraduationLevelId = request.POST.get('susGraduationLevelId')
+            SchoolFeeDetailsProfileId = request.POST.get('SchoolFeeDetailsProfileId')
             classeId = request.POST.get('classeId')
             inscriptionDate = request.POST.get('inscriptionDate')
+            SchoolFeeIds = request.POST.getlist('SchoolFeeIds')
 
             # Traitement
-            if not studentId or not susGraduationLevelId or not classeId or not inscriptionDate:
+            if not studentId or not susGraduationLevelId or not classeId or not inscriptionDate or not SchoolFeeIds:
                 status = False
                 message = "Des champs requis sont vides"
             else:
@@ -1029,11 +1520,16 @@ def Inscriptions(request):
                     message = "Cet apprenant est déjà inscrit pour cette année académique au degré " + str(
                         inscription.SusGraduationLevel.sigle)
                 else:
-                    Inscription.objects.create(AcademicYear_id=request.session['AcademicYear'],
-                                               SusGraduationLevel_id=susGraduationLevelId,
+                    newInscription = Inscription.objects.create(AcademicYear_id=request.session['AcademicYear'],
+                                               SusGraduationLevel_id=susGraduationLevelId, SchoolFeeProfile_id=SchoolFeeDetailsProfileId,
                                                Student_id=studentId, School_id=request.session['School'],
                                                Classe_id=classeId,
                                                reference=ReferenceMaker('ISC-'), inscriptionDate=inscriptionDate)
+                    # Enregistrement des frais de scolarite
+                    for ids in SchoolFeeIds:
+                        schoolfee = SchoolFeeBySchool.objects.get(id=ids)
+                        InscriptionSchoolFee.objects.create(Inscription_id=newInscription.id, SchoolFeeBySchool_id=schoolfee.id,
+                                                            amount=schoolfee.amount)
                     message = "Inscription enregistrée"
             for inscription in Inscription.objects.filter(AcademicYear_id=request.session['AcademicYear'],
                                                           School_id=request.session['School'])[:100]:
@@ -1067,7 +1563,8 @@ def Inscriptions(request):
             'inscriptions': inscriptions,
             'students': Learner.objects.filter(School_id=request.session['School'])[:100],
             'SusGraduationLevels': SusGraduationLevel.objects.all()[:100],
-            'classes': Classe.objects.filter(School_id=request.session['School'])
+            'classes': Classe.objects.filter(School_id=request.session['School']),
+            'SchoolFeesProfiles': SchoolFeeProfile.objects.all(),
         }
         return render(request, 'school/inscriptions/inscriptions.html', context)
 
@@ -1136,6 +1633,43 @@ def GetInscriptionById(request, id):
             'academicYear': inscription.AcademicYear.wording
         }
     return JsonResponse({'status': status, 'message': message, 'inscription': item})
+
+
+# get inscription details
+def GetInscriptionDetailsById(request, id):
+    status = True
+    message = ""
+    inscriptionItem = None
+    schoolfees = []
+
+    if not id:
+        status = False
+        message = "Aucune insciption sélectionnée"
+    elif not Inscription.objects.filter(id=id).exists():
+        status = False
+        message = "Cette insciption n'existe plus"
+    else:
+        inscription = Inscription.objects.get(id=id)
+        inscriptionItem = {
+            'id': inscription.id,
+            'student': str(inscription.Student),
+            'graduationLevel': str(inscription.SusGraduationLevel.GraduationLevel),
+            # 'susGraduationLevel': str(inscription.SusGraduationLevel),
+            'classe': str(inscription.Classe.wording),
+            'inscriptionDate': inscription.inscriptionDate,
+            'academicYear': inscription.AcademicYear.wording,
+            'date': inscription.inscriptionDate,
+            'profile': inscription.SchoolFeeProfile.wording,
+            'susgraduationlevel': inscription.SusGraduationLevel.sigle
+        }
+        for data in InscriptionSchoolFee.objects.filter(Inscription_id=id):
+            item = {
+                'id': data.id,
+                'schoolFee': data.SchoolFeeBySchool.SchoolFee.wording,
+                'amount': data.amount
+            }
+            schoolfees.append(item)
+        return JsonResponse({'status': status, 'message': message, 'inscription': inscriptionItem, 'schoolFees': schoolfees})
 
 
 # Delete inscription
@@ -2091,7 +2625,8 @@ def LinkStudentTutor(request):
     else:
         status = True
         message = ""
-        studentTutorsList = []
+        studentTutorsList = []  # Liste des tuteurs d un apprennant
+        tutorsStudentList = []  # liste des apprenant d un tuteur
         if is_ajax(request) and request.method == "POST":
             # Posted data
             tutorAffiliationFeaturingId = request.POST.get('tutorAffiliationFeaturingId')
@@ -2143,19 +2678,30 @@ def LinkStudentTutor(request):
                         message = "Liaison établie"
 
             if status:
-                for tutor in TutorAffiliationFeaturing.objects.filter(Student_id=studentId):
+                # Liste des tuteurs d un apprennant
+                for data in TutorAffiliationFeaturing.objects.filter(Student_id=studentId):
                     item = {
-                        'id': tutor.id,
-                        'tutorId': tutor.Tutor.id,
-                        'fullname': str(tutor.Tutor),
-                        'studentFullname': str(tutor.Student),
-                        'studentId': tutor.Student_id,
-                        'gender': tutor.Tutor.gender,
-                        'phoneNumber': tutor.Tutor.phoneNumber,
-                        'affiliation': tutor.TutorAffiliation.wording
+                        'id': data.id,
+                        'tutorId': data.Tutor.id,
+                        'fullname': str(data.Tutor),
+                        'gender': data.Tutor.gender,
+                        'phoneNumber': data.Tutor.phoneNumber,
+                        'affiliation': data.TutorAffiliation.wording
                     }
                     studentTutorsList.append(item)
-        return JsonResponse({'status': status, 'message': message, 'studentTutors': studentTutorsList})
+                # Liste des apprenants d un tuteur
+                for data in TutorAffiliationFeaturing.objects.filter(Tutor_id=tutorId, Student_id__isnull=False):
+                    item = {
+                        'id': data.id,
+                        'fullname': str(data.Student),
+                        'studentId': data.Student_id,
+                        'gender': data.Student.gender,
+                        'phoneNumber': data.Student.phoneNumber,
+                        'affiliation': data.TutorAffiliation.wording
+                    }
+                    tutorsStudentList.append(item)
+        return JsonResponse({'status': status, 'message': message, 'studentTutors': studentTutorsList,
+                             'tutorStudents': tutorsStudentList})
 
 
 # Get tutor link by id
@@ -2197,7 +2743,9 @@ def RemovetutorStudentLink(request, id):
         status = True
         message = ""
         studentTutorsList = []
+        tutorsStudentList = []
         studentId = None
+        tutorId = None
 
         if not id:
             status = False
@@ -2208,19 +2756,34 @@ def RemovetutorStudentLink(request, id):
         else:
             tutorLink = TutorAffiliationFeaturing.objects.get(id=id)
             studentId = tutorLink.Student_id
+            tutorId = tutorLink.Tutor_id
             tutorLink.delete()
             message = "Suppression faite"
         if status:
-            for tutor in TutorAffiliationFeaturing.objects.filter(Student_id=studentId):
+            # Liste des tuteurs d un apprennant
+            for data in TutorAffiliationFeaturing.objects.filter(Student_id=studentId):
                 item = {
-                    'id': tutor.id,
-                    'fullname': str(tutor.Tutor),
-                    'gender': tutor.Tutor.gender,
-                    'phoneNumber': tutor.Tutor.phoneNumber,
-                    'affiliation': tutor.TutorAffiliation.wording
+                    'id': data.id,
+                    'tutorId': data.Tutor.id,
+                    'fullname': str(data.Tutor),
+                    'gender': data.Tutor.gender,
+                    'phoneNumber': data.Tutor.phoneNumber,
+                    'affiliation': data.TutorAffiliation.wording
                 }
                 studentTutorsList.append(item)
-        return JsonResponse({'status': status, 'message': message, 'studentTutors': studentTutorsList})
+            # Liste des apprenants d un tuteur
+            for data in TutorAffiliationFeaturing.objects.filter(Tutor_id=tutorId, Student_id__isnull=False):
+                item = {
+                    'id': data.id,
+                    'fullname': str(data.Student),
+                    'studentId': data.Student_id,
+                    'gender': data.Student.gender,
+                    'phoneNumber': data.Student.phoneNumber,
+                    'affiliation': data.TutorAffiliation.wording
+                }
+                tutorsStudentList.append(item)
+        return JsonResponse({'status': status, 'message': message, 'studentTutors': studentTutorsList,
+                             'tutorStudents': tutorsStudentList})
 
 
 # Tutors message

@@ -70,6 +70,7 @@ tutorForm.addEventListener('reset', () => {
         }
     });
 })
+
 tutorForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if ($('#tutorForm').parsley().isValid()) {
@@ -100,19 +101,21 @@ tutorForm.addEventListener('submit', (e) => {
                     tutorForm.reset();
                     studentsDataList.innerHTML = ""
                     $('#tutorsTable').DataTable().clear().destroy()
-                    data.studentTutors.forEach(element => {
+                    data.tutorStudents.forEach(element => {
                         studentsDataList.innerHTML += `
                              <tr>
-                            <td>${element.fullname}</td>
-                            <td>${element.affiliation}</td>
-                            <td>${element.phoneNumber}</td>
-                            <td>
-                                <div class="button-list">
-                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getTutorLink('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
-                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeTutorLink('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close "></i> </button>
-                                </div>
-                            </td>
-                        </tr>
+                                <td>${ element.fullname }</td>
+                                <td>${ element.gender }</td>
+                                <td>${ element.affiliation }</td>
+                                <td>${ element.phoneNumber }</td>
+                                <td>
+                                    <div class="button-list">
+                                        <a href="/school/StudentDetails/${ element.studentId}" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="mdi mdi-information-outline"></i></a>
+                                        <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getTutorLink('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                        <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeTutorLink('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close"></i> </button>
+                                    </div>
+                                </td>
+                            </tr>
                         `
                     });
                     $('#tutorsTable').DataTable()
@@ -248,20 +251,22 @@ function removeTutorLink(id) {
                                 tutorForm.reset();
                                 studentsDataList.innerHTML = ""
                                 $('#tutorsTable').DataTable().clear().destroy()
-                                data.studentTutors.forEach(element => {
+                                data.tutorStudents.forEach(element => {
                                     studentsDataList.innerHTML += `
-                                        <tr>
-                                        <td>${element.fullname}</td>
-                                        <td>${element.affiliation}</td>
-                                        <td>${element.phoneNumber}</td>
-                                        <td>
-                                            <div class="button-list">
-                                                <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getTutorLink('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
-                                                <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeTutorLink('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close "></i> </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                        `
+                                         <tr>
+                                            <td>${ element.fullname }</td>
+                                            <td>${ element.gender }</td>
+                                            <td>${ element.affiliation }</td>
+                                            <td>${ element.phoneNumber }</td>
+                                            <td>
+                                                <div class="button-list">
+                                                    <a href="/school/StudentDetails/${ element.studentId}" class="btn waves-effect waves-light btn-info btn-sm" data-toggle="tooltip" title="Consulter"><i class="mdi mdi-information-outline"></i></a>
+                                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getTutorLink('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                                    <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="removeTutorLink('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="mdi mdi-close"></i> </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `
                                 });
                                 $('#tutorsTable').DataTable()
                                 swal("Succès !!", data.message, "success")

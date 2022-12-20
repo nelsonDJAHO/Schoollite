@@ -71,7 +71,6 @@ document.getElementById('susGraduationLevelId').addEventListener('change', () =>
         method: 'GET',
         url: `/school/FilterClassesBySusgraduation/${susGraduationLevelId}/`,
         success: function(data) {
-            console.log(data)
             if (data.status == true) {
                 classeId.innerHTML = `<option value ="" >Sélectionner...</option>`
                 data.classes.forEach(element => {
@@ -82,12 +81,178 @@ document.getElementById('susGraduationLevelId').addEventListener('change', () =>
     })
 })
 
+//************ Inscription ***************/
+//************ Inscription ***************/
+//************ Inscription ***************/
+
+// Get susgraduationlevel schoolfee details
+
+document.getElementById('susGraduationLevelId').addEventListener('change', () => {
+
+            susgraduationlevelid = $('#susGraduationLevelId').val()
+            SchoolFeeDetailsProfileId = $('#SchoolFeeDetailsProfileId').val()
+            mydata = new FormData()
+            mydata.append('susgraduationlevelid', susgraduationlevelid)
+            mydata.append('SchoolFeeDetailsProfileId', SchoolFeeDetailsProfileId)
+            mydata.append('csrfmiddlewaretoken', csrftoken)
+            $.ajax({
+                        method: 'POST',
+                        url: `/school/GetSchoolFeeDetailsBySusgraduationId/`,
+                        processData: false,
+                        contentType: false,
+                        data: mydata,
+                        success: function(data) {
+                                if (data.status == true) {
+                                    SusGraduationSchoolFeesDetailsDataList.innerHTML = ""
+                                    $('#SusGraduationSchoolFeesDetailsTable').DataTable().clear().destroy()
+                                    data.schoolFeeDetails.forEach(element => {
+                                                SusGraduationSchoolFeesDetailsDataList.innerHTML += `
+                        <tr>
+                            <td class="d-none" id="SchoolFeeId">${element.id}</td>
+                            <td>${element.SusGraduationLevel}</td>
+                            <td>${element.SchoolFeeProfile}</td>
+                            <td>${element.SchoolFee}</td>
+                            <td>${element.amount}</td>
+                            <td>${element.important?`Oui`:`Non`}</td>
+                            <td>${element.important?`<input type="checkbox" disabled="disabled" checked="checked" id="${element.id}">`:`<input type="checkbox" checked="checked" id="${element.id}">`}</td>
+                        </tr>
+                        `
+                    });
+                $('#SusGraduationSchoolFeesDetailsTable').DataTable()
+                toastr.success(data.message, "Information", {
+                                    timeOut: 5e3,
+                                    closeButton: !0,
+                                    debug: !1,
+                                    newestOnTop: !0,
+                                    progressBar: !0,
+                                    positionClass: "toast-top-right",
+                                    preventDuplicates: !0,
+                                    onclick: null,
+                                    showDuration: "300",
+                                    hideDuration: "1000",
+                                    extendedTimeOut: "1000",
+                                    showEasing: "swing",
+                                    hideEasing: "linear",
+                                    showMethod: "fadeIn",
+                                    hideMethod: "fadeOut",
+                                    tapToDismiss: !1
+                                })
+            } else {
+                SusGraduationSchoolFeesDetailsDataList.innerHTML = ""
+                $('#SusGraduationSchoolFeesDetailsTable').DataTable().clear().destroy()
+                $('#SusGraduationSchoolFeesDetailsTable').DataTable()
+                toastr.info(data.message, "Information", {
+                                    timeOut: 5e3,
+                                    closeButton: !0,
+                                    debug: !1,
+                                    newestOnTop: !0,
+                                    progressBar: !0,
+                                    positionClass: "toast-top-right",
+                                    preventDuplicates: !0,
+                                    onclick: null,
+                                    showDuration: "300",
+                                    hideDuration: "1000",
+                                    extendedTimeOut: "1000",
+                                    showEasing: "swing",
+                                    hideEasing: "linear",
+                                    showMethod: "fadeIn",
+                                    hideMethod: "fadeOut",
+                                    tapToDismiss: !1
+                                })
+            }
+        }
+    })
+})
+document.getElementById('SchoolFeeDetailsProfileId').addEventListener('change', () => {
+
+            susgraduationlevelid = $('#susGraduationLevelId').val()
+            SchoolFeeDetailsProfileId = $('#SchoolFeeDetailsProfileId').val()
+            mydata = new FormData()
+            mydata.append('susgraduationlevelid', susgraduationlevelid)
+            mydata.append('SchoolFeeDetailsProfileId', SchoolFeeDetailsProfileId)
+            mydata.append('csrfmiddlewaretoken', csrftoken)
+            $.ajax({
+                        method: 'POST',
+                        url: `/school/GetSchoolFeeDetailsBySusgraduationId/`,
+                        processData: false,
+                        contentType: false,
+                        data: mydata,
+                        success: function(data) {
+                                if (data.status == true) {
+                                    SusGraduationSchoolFeesDetailsDataList.innerHTML = ""
+                                    $('#SusGraduationSchoolFeesDetailsTable').DataTable().clear().destroy()
+                                    data.schoolFeeDetails.forEach(element => {
+                                                SusGraduationSchoolFeesDetailsDataList.innerHTML += `
+                        <tr>
+                            <td class="d-none" id="SchoolFeeId">${element.id}</td>
+                            <td>${element.SusGraduationLevel}</td>
+                            <td>${element.SchoolFeeProfile}</td>
+                            <td>${element.SchoolFee}</td>
+                            <td>${element.amount}</td>
+                            <td>${element.important?`Oui`:`Non`}</td>
+                            <td>${element.important?`<input type="checkbox" disabled="disabled" checked="checked" id="${element.id}">`:`<input type="checkbox" checked="checked" id="${element.id}">`}</td>
+                        </tr>
+                        `
+                    });
+                $('#SusGraduationSchoolFeesDetailsTable').DataTable()
+                toastr.success(data.message, "Information", {
+                                    timeOut: 5e3,
+                                    closeButton: !0,
+                                    debug: !1,
+                                    newestOnTop: !0,
+                                    progressBar: !0,
+                                    positionClass: "toast-top-right",
+                                    preventDuplicates: !0,
+                                    onclick: null,
+                                    showDuration: "300",
+                                    hideDuration: "1000",
+                                    extendedTimeOut: "1000",
+                                    showEasing: "swing",
+                                    hideEasing: "linear",
+                                    showMethod: "fadeIn",
+                                    hideMethod: "fadeOut",
+                                    tapToDismiss: !1
+                                })
+            } else {
+                SusGraduationSchoolFeesDetailsDataList.innerHTML = ""
+                $('#SusGraduationSchoolFeesDetailsTable').DataTable().clear().destroy()
+                $('#SusGraduationSchoolFeesDetailsTable').DataTable()
+                toastr.info(data.message, "Information", {
+                                    timeOut: 5e3,
+                                    closeButton: !0,
+                                    debug: !1,
+                                    newestOnTop: !0,
+                                    progressBar: !0,
+                                    positionClass: "toast-top-right",
+                                    preventDuplicates: !0,
+                                    onclick: null,
+                                    showDuration: "300",
+                                    hideDuration: "1000",
+                                    extendedTimeOut: "1000",
+                                    showEasing: "swing",
+                                    hideEasing: "linear",
+                                    showMethod: "fadeIn",
+                                    hideMethod: "fadeOut",
+                                    tapToDismiss: !1
+                                })
+            }
+        }
+    })
+})
+
+//Reset du formulaire d inscription
+inscriptionForm.addEventListener('reset', ()=>{
+    document.getElementById('SusGraduationSchoolFeesDetailsDataList').innerHTML = ""
+    $('#SusGraduationSchoolFeesDetailsTable').DataTable().clear().destroy()
+    $('#SusGraduationSchoolFeesDetailsTable').DataTable()
+})
+
+
+// Enregistrement d une nouvelle inscription
 inscriptionForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     if ($('#inscriptionForm').parsley().isValid()) {
-        document.getElementById('inscriptionBtn').innerHTML = "Enregistrement..."
-        document.getElementById('inscriptionBtn').disabled = true
 
         let inscriptionId = document.getElementById('inscriptionId').value
         let studentId = document.getElementById('studentId').value
@@ -99,8 +264,20 @@ inscriptionForm.addEventListener('submit', (e) => {
         mydata.append('inscriptionId', inscriptionId)
         mydata.append('studentId', studentId)
         mydata.append('susGraduationLevelId', susGraduationLevelId)
+        mydata.append('SchoolFeeDetailsProfileId', SchoolFeeDetailsProfileId)
         mydata.append('classeId', classeId)
         mydata.append('inscriptionDate', inscriptionDate)
+
+        //Frais de scolarite
+        
+        rowIds = []
+        $('#SusGraduationSchoolFeesDetailsTable tr td [type="checkbox"]').each(function(i, chk) {
+            if (chk.checked) {
+            //     rowIds.push($(this).attr('id'))
+            //     console.log(rowIds)
+                mydata.append("SchoolFeeIds", $(this).attr('id'));
+            }
+        });
         mydata.append('csrfmiddlewaretoken', csrftoken)
 
         $.ajax({
@@ -118,6 +295,9 @@ inscriptionForm.addEventListener('submit', (e) => {
                         showCancelButton: !0,
                         closeOnConfirm: !1,
                     }, function() {
+
+                        document.getElementById('inscriptionBtn').innerHTML = "Enregistrement..."
+                        document.getElementById('inscriptionBtn').disabled = true
                         $.ajax({
                             method: 'POST',
                             url: '/school/Inscriptions/',
@@ -140,6 +320,7 @@ inscriptionForm.addEventListener('submit', (e) => {
                                         <td>${element.academicYear}</td>
                                         <td>
                                             <div class="button-list">
+                                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="GetInscriptionDetailsById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
                                                     <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
                                             </div>
                                         </td>
@@ -226,7 +407,7 @@ function deleteObject(id) {
                                         <td>${element.academicYear}</td>
                                         <td>
                                             <div class="button-list">
-                                                <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="getObjectById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
+                                                    <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="GetInscriptionDetailsById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
                                                     <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
                                             </div>
                                         </td>
@@ -268,10 +449,51 @@ function deleteObject(id) {
     })
 }
 
+//************ End Inscription ***************/
+//************ End Inscription ***************/
+//************ End Inscription ***************/
 
-// filtring session****************
-// filtring session****************
-// filtring session****************
+
+//************ Inscription Informations *************/
+//************ Inscription Informations *************/
+//************ Inscription Informations *************/
+
+// get inscription details
+function GetInscriptionDetailsById(id){
+$.ajax({
+        method: 'GET',
+        url: `/school/GetInscriptionDetailsById/${id}/`,
+        success: function(data) {
+            if (data.status == true) {
+                document.getElementById('inscriptionInformationDate').value = data.inscription.inscriptionDate
+                document.getElementById('inscriptionDetailsStudent').value = data.inscription.student
+                document.getElementById('inscriptionDetailsProfil').value = data.inscription.profile
+                document.getElementById('inscriptionDetailsGraduation').value = data.inscription.susgraduationlevel
+                document.getElementById('inscriptionDetailsClasse').value = data.inscription.classe
+
+                document.getElementById('inscriptionSchoolFeesDetailsDataList').innerHTML = ""
+                $('#inscriptionSchoolFeesDetailsTable').DataTable().clear().destroy()
+                data.schoolFees.forEach(element => {
+                    document.getElementById('inscriptionSchoolFeesDetailsDataList').innerHTML += `
+                        <tr>
+                            <td>${element.schoolFee}</td>
+                            <td>${element.amount}</td>
+                        </tr>
+                        `
+                    });
+                $('#inscriptionSchoolFeesDetailsTable').DataTable()
+
+                $('#inscriptionInformationModal').modal('show')
+            }
+        }
+    })
+}
+
+//************ End Inscription Informations *************/
+//************ End Inscription Informations *************/
+//************ End Inscription Informations *************/
+
+
 // filtring session****************
 // filtring session****************
 // filtring session****************
@@ -334,6 +556,7 @@ searchForm.addEventListener('submit', (e) => {
                                 <td>${element.academicYear}</td>
                                 <td>
                                     <div class="button-list">
+                                            <button class="btn waves-effect waves-light btn-warning btn-sm text-white" onclick="GetInscriptionDetailsById('${ element.id }')" data-toggle="tooltip" title="Modifier"> <i class="mdi mdi-pencil-box-outline"></i> </button>
                                             <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
                                     </div>
                                 </td>
@@ -347,3 +570,7 @@ searchForm.addEventListener('submit', (e) => {
 
     }
 })
+
+// End filtring session****************
+// End filtring session****************
+// End filtring session****************

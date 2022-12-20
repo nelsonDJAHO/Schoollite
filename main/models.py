@@ -140,7 +140,8 @@ class Importation(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     reference = models.CharField(max_length=150, null=True, blank=True, unique=True)
-    importationfor = models.CharField(max_length=150)  # champs pour designer la raison de l importation Ex: salles de  classes
+    importationfor = models.CharField(
+        max_length=150)  # champs pour designer la raison de l importation Ex: salles de  classes
     file = models.FileField(upload_to="ImportationsFiles/")
     Date = models.DateField()
     Hour = models.TimeField()
@@ -354,11 +355,57 @@ class Classe(models.Model):
     updator = models.CharField(max_length=150, null=True, blank=True)
 
 
-# Les inscriptions
+# Les inscriptions **************** Les inscriptions
+# Les inscriptions **************** Les inscriptions
+# Les inscriptions **************** Les inscriptions
+
+# Fee profile
+class SchoolFeeProfile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    reference = models.CharField(max_length=150, null=True, blank=True, unique=True)
+    wording = models.CharField(max_length=150, null=True, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+    creator = models.CharField(max_length=150, null=True, blank=True)
+    updator = models.CharField(max_length=150, null=True, blank=True)
+
+
+# Fees
+class SchoolFee(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    reference = models.CharField(max_length=150, null=True, blank=True, unique=True)
+    wording = models.CharField(max_length=150, null=True, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+    creator = models.CharField(max_length=150, null=True, blank=True)
+    updator = models.CharField(max_length=150, null=True, blank=True)
+
+
+# Fees featuring
+class SchoolFeeBySchool(models.Model):
+    # Foreign keys
+    School = models.ForeignKey(School, on_delete=models.CASCADE)
+    AcademicYear = models.ForeignKey(AcademicYear, on_delete=models.CASCADE)
+    SusGraduationLevel = models.ForeignKey(SusGraduationLevel, on_delete=models.CASCADE)
+    SchoolFeeProfile = models.ForeignKey(SchoolFeeProfile, on_delete=models.CASCADE)
+    SchoolFee = models.ForeignKey(SchoolFee, on_delete=models.CASCADE)
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    reference = models.CharField(max_length=150, null=True, blank=True, unique=True)
+    important = models.BooleanField(default=False)
+    amount = models.FloatField(default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+    creator = models.CharField(max_length=150, null=True, blank=True)
+    updator = models.CharField(max_length=150, null=True, blank=True)
+
+
+# New inscription in classe
 class Inscription(models.Model):
     # Clé étrangères
     AcademicYear = models.ForeignKey(AcademicYear, on_delete=models.CASCADE)
     SusGraduationLevel = models.ForeignKey(SusGraduationLevel, on_delete=models.CASCADE)
+    SchoolFeeProfile = models.ForeignKey(SchoolFeeProfile, on_delete=models.CASCADE, null=True)
     Student = models.ForeignKey(User, on_delete=models.CASCADE)
     School = models.ForeignKey(School, on_delete=models.CASCADE)
     Classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
@@ -374,6 +421,24 @@ class Inscription(models.Model):
     creator = models.CharField(max_length=150, null=True, blank=True)
     updator = models.CharField(max_length=150, null=True, blank=True)
 
+
+# Les frais des scolarites a payer apres les inscriptions
+class InscriptionSchoolFee(models.Model):
+    # Cles etrangeres
+    Inscription = models.ForeignKey(Inscription, on_delete=models.CASCADE)
+    SchoolFeeBySchool = models.ForeignKey(SchoolFeeBySchool, on_delete=models.CASCADE)
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    amount = models.FloatField(default=0)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now=True)
+    creator = models.CharField(max_length=150, null=True, blank=True)
+    updator = models.CharField(max_length=150, null=True, blank=True)
+
+
+# Fin des inscriptions **************** Fin des inscriptions
+# Fin des inscriptions **************** Fin des inscriptions
+# Fin des inscriptions **************** Fin des inscriptions
 
 # Messages
 class Message(models.Model):

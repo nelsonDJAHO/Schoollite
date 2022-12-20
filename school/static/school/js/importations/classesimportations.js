@@ -49,7 +49,7 @@ importationForm.addEventListener('submit', (e) => {
                                     <td>
                                         <div class="button-list">
                                             <button class="btn waves-effect waves-light btn-info btn-sm" onclick="importationDetails('${ element.id }')" data-toggle="tooltip" title="Consulter"><i class="icon-eye"></i> </button>
-                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trah"></i> </button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-sm" onclick="deleteObject('${ element.id }')" data-toggle="tooltip" title="Supprimer"><i class="icon-trash"></i> </button>
                                         </div>
                                     </td>
                                 </tr>

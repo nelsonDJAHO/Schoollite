@@ -28,7 +28,7 @@
                 </a>
                 <ul aria-expanded="false">
                     <li><a href="{% url 'school:GraduationLevels' %}">Niveaux et degrés</a></li>
-                    <li><a href="{% url 'school:Classes' %}">Consulter / Créer</a></li>
+                    <li><a href="{% url 'school:Classes' %}">Nouvelle salle</a></li>
                 </ul>
             </li>
             <li>
@@ -36,7 +36,7 @@
                     <i class="icon-people menu-icon"></i><span class="nav-text">Les apprenants</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="{% url 'school:Students' %}">Consulter / Créer</a></li>
+                    <li><a href="{% url 'school:Students' %}">Nouvel apprenant</a></li>
                 </ul>
             </li>
             <li>
@@ -44,7 +44,7 @@
                     <i class="icon-user menu-icon"></i><span class="nav-text">Les tuteurs</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="{% url 'school:Tutors' %}">Consulter / Créer</a></li>
+                    <li><a href="{% url 'school:Tutors' %}">Nouveau tuteur</a></li>
                     <li><a href="{% url 'school:TutorsMessages' %}">Les messages</a></li>
                 </ul>
             </li>
@@ -53,7 +53,8 @@
                     <i class="icon-graduation menu-icon"></i><span class="nav-text">Les inscriptions</span>
                 </a>
                 <ul aria-expanded="false">
-                    <li><a href="{% url 'school:Inscriptions' %}">Consulter / Créer</a></li>
+                    <li><a href="{% url 'school:SchoolFees' %}">Frais de scolarité</a></li>
+                    <li><a href="{% url 'school:Inscriptions' %}">Nouvelle inscription</a></li>
                 </ul>
             </li>
             <!-- <li>
